@@ -291,10 +291,10 @@ const Projects = () => {
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.3 }}
-                          className="relative  w-full mx-auto rounded-lg  shadow-2xl bg-gray-800/50"
+                          className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
                         >
                           <video
-                            className="w-full h-auto   rounded-lg"
+                            className="w-full h-auto max-h-[400px] object-contain"
                             autoPlay
                             loop
                             muted

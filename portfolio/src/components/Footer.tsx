@@ -20,6 +20,7 @@ const Footer = () => {
     setIsSubmitting(true);
 
     try {
+      console.log(formData.email, formData.name);
       await emailjs.send(
         "service_7h236yp",
         "template_0or6ykk",

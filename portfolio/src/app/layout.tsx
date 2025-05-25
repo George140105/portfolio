@@ -1,5 +1,6 @@
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import Footer from "~/components/Footer";
 import ThemeToggle from "~/components/ThemeToggle";
 
 export const metadata = {
@@ -26,15 +27,19 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="transition-colors bg-background duration-300" suppressHydrationWarning>
+      <body
+        className="transition-colors bg-background duration-300"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem={false}
         >
-          <div className="min-h-screen bg-background text-foreground">
+          <div className="min-h-screen w-full bg-background text-foreground relative">
             {children}
             <ThemeToggle />
+            <Footer />
           </div>
         </ThemeProvider>
       </body>

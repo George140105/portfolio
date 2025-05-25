@@ -60,7 +60,7 @@ const Timeline = () => {
       </motion.h2>
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-200 dark:bg-gray-700" />
+        <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 h-full w-0.5 bg-gray-200 dark:bg-gray-700" />
 
         {timelineData.map((item, index) => (
           <motion.div
@@ -68,14 +68,14 @@ const Timeline = () => {
             initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: index * 0.2 }}
-            className={`flex ${
-              index % 2 === 0 ? "flex-row-reverse" : ""
+            className={`flex flex-col sm:flex-row ${
+              index % 2 === 0 ? "sm:flex-row-reverse" : ""
             } justify-center items-center mb-8`}
           >
             <div
-              className={`w-5/12 ${
-                index % 2 === 0 ? "text-right" : "text-left"
-              } px-4`}
+              className={`w-full sm:w-5/12 ${
+                index % 2 === 0 ? "sm:text-right" : "sm:text-left"
+              } px-0 sm:px-4 mb-4 sm:mb-0`}
             >
               <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
                 <span className="text-primary font-semibold">
@@ -98,10 +98,11 @@ const Timeline = () => {
               </div>
             </div>
             {/* Timeline dot */}
-            <div className="w-2/12 flex justify-center">
+            <div className="w-full sm:w-2/12 flex justify-center mb-4 sm:mb-0">
               <div className="w-4 h-4 bg-primary rounded-full relative z-10" />
             </div>
-            <div className="w-5/12" /> {/* Empty space for alignment */}
+            <div className="hidden sm:block w-5/12" />{" "}
+            {/* Empty space for alignment on desktop */}
           </motion.div>
         ))}
       </div>

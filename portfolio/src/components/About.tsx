@@ -6,7 +6,7 @@ import { TbBrandReactNative } from "react-icons/tb";
 
 const About = () => {
   return (
-    <section id="about" className="py-32 bg-background mt-16">
+    <section id="about" className="py-32 bg-background mt-10">
       <div className="container mx-auto px-4 max-w-5xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

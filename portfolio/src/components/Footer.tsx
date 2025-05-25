@@ -20,10 +20,10 @@ const Footer = () => {
   return (
     <footer
       id="contact"
-      className="bg-gradient-to-b from-zinc-900 via-zinc-800 to-zinc-900 py-20 relative"
+      className="bg-gradient-to-b  from-zinc-900 via-zinc-800 to-zinc-900 py-20 relative"
     >
       <div className="absolute inset-0 bg-blue-500/5"></div>
-      <div className="container mx-auto px-4 max-w-5xl relative z-10">
+      <div className="container mx-auto  px-14 max-w-5xl relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Contact Form */}
           <motion.div

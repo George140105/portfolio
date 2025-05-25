@@ -12,9 +12,9 @@ const Header = () => {
       home: "about",
       about: "timeline",
       projects: "projects",
-      contact: "contact"
+      contact: "contact",
     };
-    
+
     const element = document.getElementById(sectionMap[id] || id);
     if (element) {
       element.scrollIntoView({

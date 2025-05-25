@@ -36,7 +36,7 @@ const Projects = () => {
       title: "Helper - Mobile Support App",
       description:
         "A comprehensive mobile support application built with React Native. The app includes both frontend mobile and backend components, featuring user authentication, real-time support chat, and a robust admin dashboard. Built with modern technologies and following best practices in mobile development.",
-      video: "helper1.mp4",
+      video: "helper.mp4",
       techStack: [
         "React Native",
         "TypeScript",

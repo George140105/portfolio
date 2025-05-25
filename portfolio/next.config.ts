@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "export", // enables static export
+  // optional: if deploying to GitHub Pages
+  basePath: "/portfolio",
+  trailingSlash: true,
 };
 
-export default nextConfig;
+module.exports = nextConfig;

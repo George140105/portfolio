@@ -64,7 +64,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="min-h-screen px-4 bg-background text-foreground scroll-smooth w-full"
+          className="min-h-screen bg-background text-foreground scroll-smooth w-full"
         >
           <motion.div
             initial={{ y: 20, opacity: 0 }}

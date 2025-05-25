@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
-import Image from 'next/image';
+import Image from "next/image";
 
 interface Project {
   title: string;
@@ -65,11 +65,12 @@ const Projects = () => {
     },
     {
       title: "Process Management Simulator",
-      description: "A comprehensive process management simulator implementing multiple scheduling algorithms including FIFO, Round Robin, and Multi-Level Feedback Queue (MLFQ). Features a dynamic terminal-based UI using ncurses library, displaying real-time memory usage, process queues, and console outputs. The simulator provides visual insights into how different scheduling algorithms handle process management.",
+      description:
+        "A comprehensive process management simulator implementing multiple scheduling algorithms including FIFO, Round Robin, and Multi-Level Feedback Queue (MLFQ). Features a dynamic terminal-based UI using ncurses library, displaying real-time memory usage, process queues, and console outputs. The simulator provides visual insights into how different scheduling algorithms handle process management.",
       video: "os_project.mp4",
       techStack: ["C", "ncurses", "Process Scheduling", "Memory Management"],
       duration: "2 weeks",
-      category: "C"
+      category: "C",
     },
     {
       title: "Tic Tac Toe",
@@ -265,7 +266,7 @@ const Projects = () => {
                         loop
                         muted
                         playsInline
-                        preload="metadata"
+                        preload="auto"
                       >
                         <source
                           src={selectedProjectData.video}

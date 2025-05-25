@@ -24,8 +24,8 @@ const Footer = () => {
         "service_7h236yp",
         "template_0or6ykk",
         {
-          from_name: formData.name,
-          from_email: formData.email,
+          name: formData.name,
+          email: formData.email,
           message: formData.message,
         },
         "bbG9o0rl9QRW9C6Qu"

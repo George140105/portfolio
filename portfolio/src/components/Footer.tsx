@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { FaGithub, FaLinkedin, FaFileDownload } from "react-icons/fa";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const Footer = () => {
   const [formData, setFormData] = useState({
@@ -9,12 +10,33 @@ const Footer = () => {
     email: "",
     message: "",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<null | "success" | "error">(
+    null
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your email sending logic here
-    // You can use services like EmailJS, SendGrid, or your own API
-    console.log("Form submitted:", formData);
+    setIsSubmitting(true);
+
+    try {
+      await emailjs.send(
+        "service_7h236yp",
+        "template_0or6ykk",
+        {
+          from_name: formData.name,
+          from_email: formData.email,
+          message: formData.message,
+        },
+        "bbG9o0rl9QRW9C6Qu"
+      );
+      setSubmitStatus("success");
+      setFormData({ name: "", email: "", message: "" });
+    } catch (error) {
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import Image from "next/image";
+import { FaTools, FaClock, FaCode } from "react-icons/fa";
 
 interface Project {
   title: string;
@@ -35,7 +36,7 @@ const Projects = () => {
       title: "Helper - Mobile Support App",
       description:
         "A comprehensive mobile support application built with React Native. The app includes both frontend mobile and backend components, featuring user authentication, real-time support chat, and a robust admin dashboard. Built with modern technologies and following best practices in mobile development.",
-      video: "helper_1_merged.mp4",
+      video: "helper1.mp4",
       techStack: [
         "React Native",
         "TypeScript",
@@ -228,20 +229,28 @@ const Projects = () => {
                     {selectedProjectData.title}
                   </motion.h3>
 
-                  <motion.div className="flex gap-4 text-sm text-primary">
-                    {selectedProjectData.duration && (
-                      <span>⏱️ {selectedProjectData.duration}</span>
-                    )}
-                    {selectedProjectData.techStack && (
-                      <div className="flex gap-2">
-                        🛠️
-                        {selectedProjectData.techStack.map((tech, i) => (
-                          <span key={i} className=" bg-card px-2 py-1 rounded">
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                  <motion.div className="flex flex-col gap-4 text-sm text-primary">
+                    <div className="flex items-center gap-2">
+                      <FaTools className="text-gray-500 dark:text-gray-400" />
+                      <span className="font-medium">Tech Stack:</span>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {selectedProjectData.techStack?.map((tech, index) => (
+                        <span
+                          key={index}
+                          className="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                        >
+                          <FaCode className="text-xs" />
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <FaClock className="text-gray-500 dark:text-gray-400" />
+                      <span>Duration: {selectedProjectData.duration}</span>
+                    </div>
                   </motion.div>
 
                   <motion.p
@@ -254,27 +263,53 @@ const Projects = () => {
                   </motion.p>
 
                   {selectedProjectData.video && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 }}
-                      className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
-                    >
-                      <video
-                        className="w-full h-auto max-h-[400px] object-contain"
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        preload="auto"
-                      >
-                        <source
-                          src={selectedProjectData.video}
-                          type="video/mp4"
-                        />
-                        Your browser does not support the video tag.
-                      </video>
-                    </motion.div>
+                    <>
+                      {selectedProjectData.video == "helper1.mp4" ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="relative w-full  mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
+                        >
+                          <video
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                          >
+                            <source
+                              src={selectedProjectData.video}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        </motion.div>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3 }}
+                          className="relative  w-full mx-auto rounded-lg  shadow-2xl bg-gray-800/50"
+                        >
+                          <video
+                            className="w-full h-auto   rounded-lg"
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="auto"
+                          >
+                            <source
+                              src={selectedProjectData.video}
+                              type="video/mp4"
+                            />
+                            Your browser does not support the video tag.
+                          </video>
+                        </motion.div>
+                      )}
+                    </>
                   )}
 
                   {selectedProjectData.images && (
@@ -282,20 +317,19 @@ const Projects = () => {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.3 }}
-                      className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl"
+                      className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl"
                     >
                       <AnimatePresence mode="wait">
-                        <div className="relative w-full h-[400px]">
+                        <div className="relative w-full h-[400px] sm:h-[450px] md:h-[500px]">
                           <Image
                             key={currentImageIndex}
                             src={selectedProjectData.images[currentImageIndex]}
                             alt={`Project image ${currentImageIndex + 1}`}
                             fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            sizes="100vw"
                             className="object-contain"
-                            priority={currentImageIndex === 0}
                             quality={75}
-                            loading="lazy"
+                            priority
                           />
                         </div>
                       </AnimatePresence>

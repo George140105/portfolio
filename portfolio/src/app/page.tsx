@@ -2,8 +2,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import About from "~/components/About";
-import Contact from "~/components/Contact";
-import Footer from "~/components/Footer";
 import Header from "~/components/Header";
 import Projects from "~/components/Projects";
 import Timeline from "~/components/Timeline";
@@ -66,7 +64,7 @@ export default function Home() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="min-h-screen  bg-background text-foreground scroll-smooth w-full"
+          className="min-h-screen px-4 bg-background text-foreground scroll-smooth w-full"
         >
           <motion.div
             initial={{ y: 20, opacity: 0 }}

@@ -39,7 +39,6 @@ export default function RootLayout({
           <div className="min-h-screen w-full bg-background text-foreground relative">
             {children}
             <ThemeToggle />
-            <Footer />
           </div>
         </ThemeProvider>
       </body>

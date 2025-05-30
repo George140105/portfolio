@@ -43,49 +43,72 @@ const Footer = () => {
   return (
     <footer
       id="contact"
-      className="bg-gradient-to-b  from-zinc-900 via-zinc-800 to-zinc-900 py-20 relative"
+      className=" from-slate-100 via-slate-50 to-slate-100 py-12 relative"
     >
-      <div className="absolute inset-0 bg-blue-500/5"></div>
-      <div className="container mx-auto  px-14 max-w-5xl relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <div className="absolute inset-0 bg-primary/5"></div>
+      <div className="container mx-auto px-14 max-w-5xl relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Contact Form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h3 className="text-2xl font-bold text-white mb-6">Get in Touch</h3>
+            <h3 className="text-2xl font-bold text-foreground mb-4">
+              Get in Touch
+            </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Name"
-                className="w-full px-4 py-2 bg-zinc-800 rounded-lg border border-blue-500/20 focus:border-blue-500/40 focus:outline-none text-gray-300"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                className="w-full px-4 py-2 bg-zinc-800 rounded-lg border border-blue-500/20 focus:border-blue-500/40 focus:outline-none text-gray-300"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-              <textarea
-                placeholder="Message"
-                rows={4}
-                className="w-full px-4 py-2 bg-zinc-800 rounded-lg border border-blue-500/20 focus:border-blue-500/40 focus:outline-none text-gray-300"
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-              />
+              <div className="space-y-1">
+                <label htmlFor="name" className="block text-sm text-foreground">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="email"
+                  className="block text-sm text-foreground"
+                >
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
+                  value={formData.email}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
+                />
+              </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="message"
+                  className="block text-sm text-foreground"
+                >
+                  Message
+                </label>
+                <textarea
+                  id="message"
+                  rows={4}
+                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
+                  value={formData.message}
+                  onChange={(e) =>
+                    setFormData({ ...formData, message: e.target.value })
+                  }
+                />
+              </div>
               <button
                 type="submit"
-                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors"
               >
                 Send Message
               </button>
@@ -97,36 +120,40 @@ const Footer = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-8"
+            className="space-y-6"
           >
             <div>
-              <h3 className="text-2xl font-bold text-white mb-6">Connect</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Connect
+              </h3>
               <div className="flex gap-4">
                 <a
                   href="https://github.com/George140105"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors"
+                  className="p-3 bg-card rounded-full hover:bg-muted transition-colors"
                 >
-                  <FaGithub className="text-2xl text-gray-300" />
+                  <FaGithub className="text-2xl text-foreground" />
                 </a>
                 <a
                   href="https://www.linkedin.com/in/george-amgad-reyad/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors"
+                  className="p-3 bg-card rounded-full hover:bg-muted transition-colors"
                 >
-                  <FaLinkedin className="text-2xl text-gray-300" />
+                  <FaLinkedin className="text-2xl text-foreground" />
                 </a>
               </div>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold text-white mb-6">Resume</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-4">
+                Resume
+              </h3>
               <a
                 href="/George_Amgad_Resume[1].pdf"
                 download
-                className="inline-flex items-center px-6 py-3 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors text-gray-300"
+                className="inline-flex items-center px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors "
               >
                 <FaFileDownload className="mr-2" />
                 Download CV
@@ -135,7 +162,7 @@ const Footer = () => {
           </motion.div>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-zinc-800 text-center text-gray-400">
+        <div className="mt-8 pt-6 border-t border-primary/10 text-center text-muted-foreground">
           <p>
             &copy; {new Date().getFullYear()} George Amgad. All rights reserved.
           </p>

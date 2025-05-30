@@ -41,7 +41,7 @@ const About = () => {
             <div className="space-y-8">
               <div>
                 <h4 className="text-lg font-semibold text-blue-400 mb-3">
-                  Languages
+                  Programming Languages
                 </h4>
                 <ul className="flex flex-wrap gap-3">
                   <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">

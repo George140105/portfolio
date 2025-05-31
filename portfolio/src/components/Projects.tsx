@@ -109,6 +109,15 @@ const Projects = () => {
       duration: "University Project",
       category: "Java",
     },
+    {
+      title: "SCAD - Internship Management System",
+      description:
+        "A comprehensive internship management system for the German University in Cairo. Features include student registration, company posting management, internship applications tracking, and administrative dashboard. Built as a collaborative project to streamline the internship process for students and faculty.",
+      video: "scad.mp4",
+      techStack: ["React", "Tailwind CSS"],
+      duration: "1 months",
+      category: "React",
+    },
   ];
 
   const categories = ["Java", "C", "React", "React Native"];

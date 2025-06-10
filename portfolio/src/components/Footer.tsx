@@ -1,8 +1,14 @@
 "use client";
 import { motion } from "framer-motion";
-import { FaGithub, FaLinkedin, FaFileDownload } from "react-icons/fa";
+import {
+  FaGithub,
+  FaLinkedin,
+  FaFileDownload,
+  FaSpinner,
+} from "react-icons/fa";
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { useModal } from "~/providers/ModalProvider";
 
 const Footer = () => {
   const [formData, setFormData] = useState({
@@ -11,16 +17,13 @@ const Footer = () => {
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<null | "success" | "error">(
-    null
-  );
+  const { showModal } = useModal();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      console.log(formData.email, formData.name);
       await emailjs.send(
         "service_7h236yp",
         "template_0or6ykk",
@@ -31,10 +34,10 @@ const Footer = () => {
         },
         "bbG9o0rl9QRW9C6Qu"
       );
-      setSubmitStatus("success");
+      showModal("success");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      setSubmitStatus("error");
+      showModal("error");
     } finally {
       setIsSubmitting(false);
     }
@@ -43,7 +46,7 @@ const Footer = () => {
   return (
     <footer
       id="contact"
-      className=" from-slate-100 via-slate-50 to-slate-100 py-12 relative"
+      className="from-slate-100 via-slate-50 to-slate-100 py-12 relative"
     >
       <div className="absolute inset-0 bg-primary/5"></div>
       <div className="container mx-auto px-14 max-w-5xl relative z-10">
@@ -108,9 +111,14 @@ const Footer = () => {
               </div>
               <button
                 type="submit"
-                className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors"
+                disabled={isSubmitting}
+                className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
               >
-                Send Message
+                {isSubmitting ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Send Message"
+                )}
               </button>
             </form>
           </motion.div>
@@ -151,7 +159,7 @@ const Footer = () => {
                 Resume
               </h3>
               <a
-                href="/George_Amgad_Resume[1].pdf"
+                href="/George_Amgad_Frontend_Dev.pdf"
                 download
                 className="inline-flex items-center px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors "
               >

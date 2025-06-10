@@ -2,6 +2,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import Footer from "~/components/Footer";
 import ThemeToggle from "~/components/ThemeToggle";
+import { ModalProvider } from "~/providers/ModalProvider";
 
 export const metadata = {
   title: "George Amgad - Portfolio",
@@ -36,10 +37,12 @@ export default function RootLayout({
           defaultTheme="dark"
           enableSystem={false}
         >
-          <div className="min-h-screen w-full bg-background text-foreground relative">
-            {children}
-            <ThemeToggle />
-          </div>
+          <ModalProvider>
+            <div className="min-h-screen w-full bg-background text-foreground relative">
+              {children}
+              <ThemeToggle />
+            </div>
+          </ModalProvider>
         </ThemeProvider>
       </body>
     </html>

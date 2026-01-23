@@ -39,6 +39,21 @@ const Projects = () => {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Preload all videos on component mount
+  useEffect(() => {
+    const videoUrls = projects
+      .filter((project) => project.video)
+      .map((project) => project.video as string);
+
+    // Preload videos by creating video elements
+    videoUrls.forEach((videoUrl) => {
+      const video = document.createElement('video');
+      video.src = videoUrl;
+      video.preload = 'auto';
+      video.load();
+    });
+  }, []);
+
   const projects: Project[] = [
     {
       title: "Homebase – Household Management App",

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import Image from "next/image";
@@ -21,16 +21,54 @@ const Projects = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedProjectData, setSelectedProjectData] =
     useState<Project | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoAspectRatio, setVideoAspectRatio] = useState<'portrait' | 'landscape'>('portrait');
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const projects: Project[] = [
     {
-      title: "GoE - Hotel Booking Platform",
+      title: "Homebase – Household Management App",
       description:
-        "A modern hotel booking platform built with Next.js and TypeScript. Features include a responsive design, popular destinations showcase, featured hotels listing, and booking functionality. The platform offers an intuitive user interface with city-based hotel search and comprehensive booking management.",
-      video: "goe.mp4",
-      techStack: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
-      duration: "2 months",
-      category: "React",
+        "A collaborative household management app that lets members share tasks, documents, and events in real time, with instant notifications to keep everyone in sync. Built with React Native, Homebase streamlines family organization with intuitive task assignment, shared calendars, and document storage. Features include real-time push notifications, member role management, and seamless synchronization across all devices.",
+      video: "homebase_preview.mp4",
+      techStack: [
+        "React Native",
+        "TypeScript",
+        "Firebase",
+        "Push Notifications",
+        "Real-time Database",
+      ],
+      duration: "4 months",
+      category: "React Native",
+    },
+    {
+      title: "Hiryo – Family Safety & Location App",
+      description:
+        "A family and friends safety app that shows circle members' locations on a live map and sends updates when they arrive or leave a place, featuring a robust SOS alert system for emergencies. Hiryo provides peace of mind with real-time location tracking, geofencing capabilities, and instant emergency alerts. The app includes customizable safety circles, location history, and battery-efficient tracking.",
+      video: null,
+      images: [],
+      techStack: [
+        "React Native",
+        "TypeScript",
+        "Google Maps API",
+        "Geofencing",
+        "Push Notifications",
+        "Real-time Tracking",
+      ],
+      duration: "5 months",
+      category: "React Native",
     },
     {
       title: "Helper - Mobile Support App",
@@ -63,6 +101,15 @@ const Projects = () => {
       techStack: ["React Native", "Next.js", "Node.js", "TypeScript", "i18n"],
       duration: "6 months",
       category: "React Native",
+    },
+    {
+      title: "GoE - Hotel Booking Platform",
+      description:
+        "A modern hotel booking platform built with Next.js and TypeScript. Features include a responsive design, popular destinations showcase, featured hotels listing, and booking functionality. The platform offers an intuitive user interface with city-based hotel search and comprehensive booking management.",
+      video: "goe.mp4",
+      techStack: ["Next.js", "TypeScript", "Tailwind CSS", "React"],
+      duration: "2 months",
+      category: "React",
     },
     {
       title: "Process Management Simulator",
@@ -120,7 +167,7 @@ const Projects = () => {
     },
   ];
 
-  const categories = ["Java", "C", "React", "React Native"];
+  const categories = ["React Native", "React", "Java", "C"];
   const projectsByCategory = categories.map((category) => ({
     name: category,
     projects: projects.filter((project) => project.category === category),
@@ -131,6 +178,100 @@ const Projects = () => {
     setSelectedProject(projectIndex);
     setSelectedProjectData(project);
     setCurrentImageIndex(0);
+    setShowOverlay(true); // Reset overlay when switching projects
+
+    // Detect video aspect ratio for both mobile and desktop
+    if (project.video) {
+      // Create temporary video element to check dimensions
+      const tempVideo = document.createElement('video');
+      tempVideo.src = project.video;
+      tempVideo.onloadedmetadata = () => {
+        const isPortrait = tempVideo.videoHeight > tempVideo.videoWidth;
+        setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+      };
+    }
+
+    // Auto-scroll to video on mobile
+    if (isMobile) {
+      setTimeout(() => {
+        const videoElement = document.querySelector('video');
+        const imageElement = document.querySelector('.relative.w-full.mx-auto.rounded-lg');
+        const targetElement = videoElement || imageElement;
+        
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+  };
+
+  const handleVideoClick = () => {
+    if (!isMobile) return; // Only toggle on mobile
+    
+    if (showOverlay) {
+      // Hide overlay and play video
+      setShowOverlay(false);
+      if (videoRef.current) {
+        videoRef.current.play();
+      }
+    } else {
+      // Show overlay and pause video
+      setShowOverlay(true);
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+    }
+  };
+
+  const navigateProject = (direction: 'prev' | 'next') => {
+    if (!selectedProjectData) return;
+
+    // Find current project's category and index
+    let currentCategoryIndex = -1;
+    let currentProjectIndex = -1;
+
+    projectsByCategory.forEach((category, catIndex) => {
+      const projIndex = category.projects.findIndex(
+        (p) => p.title === selectedProjectData.title
+      );
+      if (projIndex !== -1) {
+        currentCategoryIndex = catIndex;
+        currentProjectIndex = projIndex;
+      }
+    });
+
+    if (currentCategoryIndex === -1) return;
+
+    const currentCategory = projectsByCategory[currentCategoryIndex];
+    
+    if (direction === 'next') {
+      // Try next project in same category
+      if (currentProjectIndex < currentCategory.projects.length - 1) {
+        handleProjectSelect(currentCategoryIndex, currentProjectIndex + 1);
+      } else {
+        // Move to first project of next category
+        const nextCategoryIndex = (currentCategoryIndex + 1) % projectsByCategory.length;
+        if (projectsByCategory[nextCategoryIndex].projects.length > 0) {
+          setExpandedCategory(projectsByCategory[nextCategoryIndex].name);
+          handleProjectSelect(nextCategoryIndex, 0);
+        }
+      }
+    } else {
+      // Try previous project in same category
+      if (currentProjectIndex > 0) {
+        handleProjectSelect(currentCategoryIndex, currentProjectIndex - 1);
+      } else {
+        // Move to last project of previous category
+        const prevCategoryIndex = currentCategoryIndex === 0 
+          ? projectsByCategory.length - 1 
+          : currentCategoryIndex - 1;
+        const prevCategory = projectsByCategory[prevCategoryIndex];
+        if (prevCategory.projects.length > 0) {
+          setExpandedCategory(prevCategory.name);
+          handleProjectSelect(prevCategoryIndex, prevCategory.projects.length - 1);
+        }
+      }
+    }
   };
 
   useEffect(() => {
@@ -220,7 +361,51 @@ const Projects = () => {
           </div>
 
           {/* Project Details */}
-          <div className="lg:w-2/3">
+          <div className="lg:w-2/3 relative">
+            {/* Desktop Navigation Arrows */}
+            {!isMobile && selectedProjectData && (
+              <>
+                <button
+                  onClick={() => navigateProject('prev')}
+                  className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-card hover:bg-card-hover p-3 rounded-full shadow-lg transition-all hover:scale-110 border border-primary/20"
+                  aria-label="Previous project"
+                >
+                  <svg
+                    className="w-6 h-6 text-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 19l-7-7 7-7"
+                    />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => navigateProject('next')}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-card hover:bg-card-hover p-3 rounded-full shadow-lg transition-all hover:scale-110 border border-primary/20"
+                  aria-label="Next project"
+                >
+                  <svg
+                    className="w-6 h-6 text-foreground"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </>
+            )}
+
             <AnimatePresence mode="wait">
               {selectedProjectData && (
                 <motion.div
@@ -231,97 +416,203 @@ const Projects = () => {
                   transition={{ duration: 0.3 }}
                   className="space-y-6"
                 >
-                  <motion.h3
-                    className="text-3xl font-bold text-foreground"
-                    layoutId={`title-${selectedProjectData.title}`}
-                  >
-                    {selectedProjectData.title}
-                  </motion.h3>
-
-                  <motion.div className="flex flex-col gap-4 text-sm text-primary">
-                    <div className="flex items-center gap-2">
-                      <FaTools className="text-gray-500 dark:text-gray-400" />
-                      <span className="font-medium">Tech Stack:</span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      {selectedProjectData.techStack?.map((tech, index) => (
-                        <span
-                          key={index}
-                          className="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
-                        >
-                          <FaCode className="text-xs" />
-                          {tech}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <FaClock className="text-gray-500 dark:text-gray-400" />
-                      <span>Duration: {selectedProjectData.duration}</span>
-                    </div>
-                  </motion.div>
-
-                  <motion.p
-                    className="text-foreground text-xl leading-relaxed"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    {selectedProjectData.description}
-                  </motion.p>
-
-                  {selectedProjectData.video && (
+                  {/* Show title and tech stack on desktop, or on mobile if no video */}
+                  {(!isMobile || !selectedProjectData.video) && (
                     <>
-                      {selectedProjectData.video == "helper.mp4" ? (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.3 }}
-                          className="relative w-full  mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
-                        >
-                          <video
-                            className="w-full h-full object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="auto"
+                      <motion.h3
+                        className="text-3xl font-bold text-foreground"
+                        layoutId={`title-${selectedProjectData.title}`}
+                      >
+                        {selectedProjectData.title}
+                      </motion.h3>
+
+                      <motion.div className="flex flex-col gap-4 text-sm text-primary">
+                        <div className="flex items-center gap-2">
+                          <FaTools className="text-gray-500 dark:text-gray-400" />
+                          <span className="font-medium">Tech Stack:</span>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                          {selectedProjectData.techStack?.map((tech, index) => (
+                            <span
+                              key={index}
+                              className="flex items-center gap-1 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200"
+                            >
+                              <FaCode className="text-xs" />
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <FaClock className="text-gray-500 dark:text-gray-400" />
+                          <span>Duration: {selectedProjectData.duration}</span>
+                        </div>
+                      </motion.div>
+
+                      <motion.p
+                        className="text-foreground text-xl leading-relaxed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        {selectedProjectData.description}
+                      </motion.p>
+                    </>
+                  )}
+                  {/* Mobile View with Overlay */}
+                  {isMobile && selectedProjectData.video && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50 cursor-pointer"
+                      onClick={handleVideoClick}
+                      style={{ 
+                        maxWidth: videoAspectRatio === 'portrait' ? '600px' : '100%'
+                      }}
+                    >
+                      <video
+                        ref={videoRef}
+                        className="w-full h-auto object-contain"
+                        loop
+                        muted
+                        playsInline
+                        preload="auto"
+                        onLoadedMetadata={(e) => {
+                          const video = e.currentTarget;
+                          const isPortrait = video.videoHeight > video.videoWidth;
+                          setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+                        }}
+                      >
+                        <source
+                          src={selectedProjectData.video}
+                          type="video/mp4"
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                      
+                      {/* Overlay */}
+                      <AnimatePresence>
+                        {showOverlay && (
+                          <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="absolute inset-0 bg-gradient-to-b from-gray-900/95 via-gray-900/90 to-gray-900/95 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center overflow-y-auto"
                           >
-                            <source
-                              src={selectedProjectData.video}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        </motion.div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.3 }}
-                          className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
+                            <motion.h3
+                              initial={{ y: 20, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.05 }}
+                              className="text-xl sm:text-2xl font-bold text-white mb-3"
+                            >
+                              {selectedProjectData.title}
+                            </motion.h3>
+
+                            <motion.div
+                              initial={{ y: 20, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.1 }}
+                              className="flex flex-wrap gap-2 justify-center mb-3"
+                            >
+                              {selectedProjectData.techStack?.map((tech, index) => (
+                                <span
+                                  key={index}
+                                  className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-200 text-xs"
+                                >
+                                  <FaCode className="text-xs" />
+                                  {tech}
+                                </span>
+                              ))}
+                            </motion.div>
+
+                            <motion.p
+                              initial={{ y: 20, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.15 }}
+                              className="text-white text-xs sm:text-sm leading-relaxed mb-4 max-w-lg"
+                            >
+                              {selectedProjectData.description}
+                            </motion.p>
+                            <motion.div
+                              initial={{ y: 20, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              transition={{ delay: 0.2 }}
+                              className="flex items-center gap-2 text-gray-300 text-xs sm:text-sm"
+                            >
+                              <span>Tap to play video</span>
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                                />
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                              </svg>
+                            </motion.div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )}
+
+                  {/* Desktop View - Original Layout */}
+                  {!isMobile && selectedProjectData.video && (
+                    <>
+                      <motion.p
+                        className="text-foreground text-xl leading-relaxed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        {selectedProjectData.description}
+                      </motion.p>
+                      
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
+                        style={{
+                          maxWidth: videoAspectRatio === 'portrait' ? '450px' : '800px'
+                        }}
+                      >
+                        <video
+                          className="w-full h-auto object-contain"
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          preload="auto"
+                          onLoadedMetadata={(e) => {
+                            const video = e.currentTarget;
+                            const isPortrait = video.videoHeight > video.videoWidth;
+                            setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+                          }}
                         >
-                          <video
-                            className="w-full h-auto max-h-[400px] object-contain"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="auto"
-                          >
-                            <source
-                              src={selectedProjectData.video}
-                              type="video/mp4"
-                            />
-                            Your browser does not support the video tag.
-                          </video>
-                        </motion.div>
-                      )}
+                          <source
+                            src={selectedProjectData.video}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      </motion.div>
                     </>
                   )}
 
-                  {selectedProjectData.images && (
+                  {selectedProjectData.images && selectedProjectData.images.length > 0 && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -354,6 +645,22 @@ const Projects = () => {
                             onClick={() => setCurrentImageIndex(index)}
                           />
                         ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {!selectedProjectData.video && (!selectedProjectData.images || selectedProjectData.images.length === 0) && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 }}
+                      className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50 p-12"
+                    >
+                      <div className="flex flex-col items-center justify-center text-center">
+                        <div className="text-6xl mb-4">📱</div>
+                        <p className="text-gray-400 text-lg">
+                          Media coming soon
+                        </p>
                       </div>
                     </motion.div>
                   )}

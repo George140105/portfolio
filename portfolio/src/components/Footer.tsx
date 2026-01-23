@@ -32,7 +32,7 @@ const Footer = () => {
           email: formData.email,
           message: formData.message,
         },
-        "bbG9o0rl9QRW9C6Qu"
+        "bbG9o0rl9QRW9C6Qu",
       );
       showModal("success");
       setFormData({ name: "", email: "", message: "" });
@@ -159,7 +159,7 @@ const Footer = () => {
                 Resume
               </h3>
               <a
-                href="/George_Amgad_Frontend_Dev.pdf"
+                href="/George_mobile_dev_resume_2026.pdf"
                 download
                 className="inline-flex items-center px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors "
               >

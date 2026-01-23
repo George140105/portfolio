@@ -14,15 +14,37 @@ const Timeline = () => {
       ],
     },
     {
+      period: "August 2025 - February 2026",
+      title: "Part-Time Mobile Developer",
+      subtitle: "Hiryo – Cairo, Egypt",
+      details: [
+        "Spearheaded the Android launch of Hiryo on the Google Play Store",
+        "Revamped the onboarding flow to reduce user drop-off and improve retention",
+        "Implemented real-time location tracking and SOS alert system features",
+        "Optimized app performance and battery efficiency for background operations",
+        "Conducted testing and quality assurance across multiple Android devices",
+      ],
+    },
+    {
+      period: "June - August 2025",
+      title: "Mobile Development Intern",
+      subtitle: "Hiryo – Cairo, Egypt",
+      details: [
+        "Developed Homebase, a collaborative household management app from concept to production",
+        "Built real-time task sharing and notification systems using Firebase and React Native",
+        "Designed intuitive UI/UX for family collaboration and event coordination",
+        "Implemented secure document storage and member role management features",
+      ],
+    },
+    {
       period: "August - December 2024",
       title: "Frontend Mobile Developer",
       subtitle: "KemitWare – Cairo, Egypt",
       details: [
-        "Spearheaded the development of cross-platform mobile applications using React Native",
-        "Implemented responsive UI/UX designs resulting in improved user engagement",
-        "Developed an innovative social networking app with real-time features",
-        "Created an agricultural management platform connecting farmers with inspectors",
-        "Collaborated with design team to optimize user interface and experience",
+        "Developed cross-platform mobile applications using React Native and TypeScript",
+        "Created Mahsooly, an agricultural management platform connecting farmers with field inspectors",
+        "Implemented multi-language support (Arabic/English) and user role management systems",
+        "Built responsive UI components and integrated RESTful APIs for data synchronization",
       ],
     },
     {

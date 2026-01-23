@@ -47,9 +47,9 @@ const Projects = () => {
 
     // Preload videos by creating video elements
     videoUrls.forEach((videoUrl) => {
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       video.src = videoUrl;
-      video.preload = 'auto';
+      video.preload = "auto";
       video.load();
     });
   }, []);

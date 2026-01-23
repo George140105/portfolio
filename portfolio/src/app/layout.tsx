@@ -18,17 +18,42 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* Preload critical videos */}
-        <link rel="preload" href="/homebase_preview.mp4" as="video" type="video/mp4" />
+        <link
+          rel="preload"
+          href="/homebase_preview.mp4"
+          as="video"
+          type="video/mp4"
+        />
         <link rel="preload" href="/helper.mp4" as="video" type="video/mp4" />
         <link rel="preload" href="/goe.mp4" as="video" type="video/mp4" />
-        <link rel="preload" href="/os_project.mp4" as="video" type="video/mp4" />
-        <link rel="preload" href="/tictactoe(1).mp4" as="video" type="video/mp4" />
+        <link
+          rel="preload"
+          href="/os_project.mp4"
+          as="video"
+          type="video/mp4"
+        />
+        <link
+          rel="preload"
+          href="/tictactoe(1).mp4"
+          as="video"
+          type="video/mp4"
+        />
         <link rel="preload" href="/Connect 4.mp4" as="video" type="video/mp4" />
-        <link rel="preload" href="/Flappy Bird.mp4" as="video" type="video/mp4" />
-        <link rel="preload" href="/Attack on Titan.mp4" as="video" type="video/mp4" />
+        <link
+          rel="preload"
+          href="/Flappy Bird.mp4"
+          as="video"
+          type="video/mp4"
+        />
+        <link
+          rel="preload"
+          href="/Attack on Titan.mp4"
+          as="video"
+          type="video/mp4"
+        />
         <link rel="preload" href="/scad.mp4" as="video" type="video/mp4" />
         <link rel="preload" href="/helper1.mp4" as="video" type="video/mp4" />
-        
+
         <script
           dangerouslySetInnerHTML={{
             __html: `

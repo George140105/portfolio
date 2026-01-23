@@ -32,10 +32,12 @@ const About = () => {
           className="max-w-3xl"
         >
           <p className="text-2xl text-foreground mb-12 leading-relaxed">
-            I am a passionate mobile app developer specializing in React Native and cross-platform development. 
-            With a strong foundation in software engineering, I create intuitive, performant mobile applications 
-            that deliver seamless user experiences across iOS and Android platforms. I enjoy building apps that 
-            solve real-world problems and bring value to users' daily lives.
+            I am a passionate mobile app developer specializing in React Native
+            and cross-platform development. With a strong foundation in software
+            engineering, I create intuitive, performant mobile applications that
+            deliver seamless user experiences across iOS and Android platforms.
+            I enjoy building apps that solve real-world problems and bring value
+            to users' daily lives.
           </p>
           <div>
             <h3 className="text-2xl font-bold text-white mb-6">Skills</h3>
@@ -47,11 +49,15 @@ const About = () => {
                 <ul className="flex flex-wrap gap-3">
                   <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/40 hover:border-blue-500/60 transition-colors shadow-lg shadow-blue-500/20">
                     <TbBrandReactNative className="mr-2 text-blue-400 text-xl" />
-                    <span className="text-gray-300 font-semibold">React Native</span>
+                    <span className="text-gray-300 font-semibold">
+                      React Native
+                    </span>
                   </li>
                   <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/40 hover:border-blue-500/60 transition-colors shadow-lg shadow-blue-500/20">
                     <SiTypescript className="mr-2 text-blue-400" />
-                    <span className="text-gray-300 font-semibold">TypeScript</span>
+                    <span className="text-gray-300 font-semibold">
+                      TypeScript
+                    </span>
                   </li>
                   <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
                     <span className="text-gray-300">iOS & Android</span>

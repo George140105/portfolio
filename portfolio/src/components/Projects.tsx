@@ -24,7 +24,9 @@ const Projects = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoAspectRatio, setVideoAspectRatio] = useState<'portrait' | 'landscape'>('portrait');
+  const [videoAspectRatio, setVideoAspectRatio] = useState<
+    "portrait" | "landscape"
+  >("portrait");
 
   useEffect(() => {
     const checkMobile = () => {
@@ -183,23 +185,25 @@ const Projects = () => {
     // Detect video aspect ratio for both mobile and desktop
     if (project.video) {
       // Create temporary video element to check dimensions
-      const tempVideo = document.createElement('video');
+      const tempVideo = document.createElement("video");
       tempVideo.src = project.video;
       tempVideo.onloadedmetadata = () => {
         const isPortrait = tempVideo.videoHeight > tempVideo.videoWidth;
-        setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+        setVideoAspectRatio(isPortrait ? "portrait" : "landscape");
       };
     }
 
     // Auto-scroll to video on mobile
     if (isMobile) {
       setTimeout(() => {
-        const videoElement = document.querySelector('video');
-        const imageElement = document.querySelector('.relative.w-full.mx-auto.rounded-lg');
+        const videoElement = document.querySelector("video");
+        const imageElement = document.querySelector(
+          ".relative.w-full.mx-auto.rounded-lg",
+        );
         const targetElement = videoElement || imageElement;
-        
+
         if (targetElement) {
-          targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          targetElement.scrollIntoView({ behavior: "smooth", block: "center" });
         }
       }, 300);
     }
@@ -207,7 +211,7 @@ const Projects = () => {
 
   const handleVideoClick = () => {
     if (!isMobile) return; // Only toggle on mobile
-    
+
     if (showOverlay) {
       // Hide overlay and play video
       setShowOverlay(false);
@@ -223,7 +227,7 @@ const Projects = () => {
     }
   };
 
-  const navigateProject = (direction: 'prev' | 'next') => {
+  const navigateProject = (direction: "prev" | "next") => {
     if (!selectedProjectData) return;
 
     // Find current project's category and index
@@ -232,7 +236,7 @@ const Projects = () => {
 
     projectsByCategory.forEach((category, catIndex) => {
       const projIndex = category.projects.findIndex(
-        (p) => p.title === selectedProjectData.title
+        (p) => p.title === selectedProjectData.title,
       );
       if (projIndex !== -1) {
         currentCategoryIndex = catIndex;
@@ -243,14 +247,15 @@ const Projects = () => {
     if (currentCategoryIndex === -1) return;
 
     const currentCategory = projectsByCategory[currentCategoryIndex];
-    
-    if (direction === 'next') {
+
+    if (direction === "next") {
       // Try next project in same category
       if (currentProjectIndex < currentCategory.projects.length - 1) {
         handleProjectSelect(currentCategoryIndex, currentProjectIndex + 1);
       } else {
         // Move to first project of next category
-        const nextCategoryIndex = (currentCategoryIndex + 1) % projectsByCategory.length;
+        const nextCategoryIndex =
+          (currentCategoryIndex + 1) % projectsByCategory.length;
         if (projectsByCategory[nextCategoryIndex].projects.length > 0) {
           setExpandedCategory(projectsByCategory[nextCategoryIndex].name);
           handleProjectSelect(nextCategoryIndex, 0);
@@ -262,13 +267,17 @@ const Projects = () => {
         handleProjectSelect(currentCategoryIndex, currentProjectIndex - 1);
       } else {
         // Move to last project of previous category
-        const prevCategoryIndex = currentCategoryIndex === 0 
-          ? projectsByCategory.length - 1 
-          : currentCategoryIndex - 1;
+        const prevCategoryIndex =
+          currentCategoryIndex === 0
+            ? projectsByCategory.length - 1
+            : currentCategoryIndex - 1;
         const prevCategory = projectsByCategory[prevCategoryIndex];
         if (prevCategory.projects.length > 0) {
           setExpandedCategory(prevCategory.name);
-          handleProjectSelect(prevCategoryIndex, prevCategory.projects.length - 1);
+          handleProjectSelect(
+            prevCategoryIndex,
+            prevCategory.projects.length - 1,
+          );
         }
       }
     }
@@ -278,7 +287,7 @@ const Projects = () => {
     if (selectedProjectData?.images) {
       const timer = setInterval(() => {
         setCurrentImageIndex(
-          (prevIndex) => (prevIndex + 1) % selectedProjectData.images!.length
+          (prevIndex) => (prevIndex + 1) % selectedProjectData.images!.length,
         );
       }, 3000);
 
@@ -309,7 +318,7 @@ const Projects = () => {
                       setExpandedCategory(
                         expandedCategory === category.name
                           ? null
-                          : category.name
+                          : category.name,
                       )
                     }
                     whileHover={{ x: 10 }}
@@ -366,7 +375,7 @@ const Projects = () => {
             {!isMobile && selectedProjectData && (
               <>
                 <button
-                  onClick={() => navigateProject('prev')}
+                  onClick={() => navigateProject("prev")}
                   className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-card hover:bg-card-hover p-3 rounded-full shadow-lg transition-all hover:scale-110 border border-primary/20"
                   aria-label="Previous project"
                 >
@@ -385,7 +394,7 @@ const Projects = () => {
                   </svg>
                 </button>
                 <button
-                  onClick={() => navigateProject('next')}
+                  onClick={() => navigateProject("next")}
                   className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-card hover:bg-card-hover p-3 rounded-full shadow-lg transition-all hover:scale-110 border border-primary/20"
                   aria-label="Next project"
                 >
@@ -468,8 +477,9 @@ const Projects = () => {
                       transition={{ delay: 0.3 }}
                       className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50 cursor-pointer"
                       onClick={handleVideoClick}
-                      style={{ 
-                        maxWidth: videoAspectRatio === 'portrait' ? '600px' : '100%'
+                      style={{
+                        maxWidth:
+                          videoAspectRatio === "portrait" ? "600px" : "100%",
                       }}
                     >
                       <video
@@ -481,8 +491,11 @@ const Projects = () => {
                         preload="auto"
                         onLoadedMetadata={(e) => {
                           const video = e.currentTarget;
-                          const isPortrait = video.videoHeight > video.videoWidth;
-                          setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+                          const isPortrait =
+                            video.videoHeight > video.videoWidth;
+                          setVideoAspectRatio(
+                            isPortrait ? "portrait" : "landscape",
+                          );
                         }}
                       >
                         <source
@@ -491,7 +504,7 @@ const Projects = () => {
                         />
                         Your browser does not support the video tag.
                       </video>
-                      
+
                       {/* Overlay */}
                       <AnimatePresence>
                         {showOverlay && (
@@ -516,15 +529,17 @@ const Projects = () => {
                               transition={{ delay: 0.1 }}
                               className="flex flex-wrap gap-2 justify-center mb-3"
                             >
-                              {selectedProjectData.techStack?.map((tech, index) => (
-                                <span
-                                  key={index}
-                                  className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-200 text-xs"
-                                >
-                                  <FaCode className="text-xs" />
-                                  {tech}
-                                </span>
-                              ))}
+                              {selectedProjectData.techStack?.map(
+                                (tech, index) => (
+                                  <span
+                                    key={index}
+                                    className="flex items-center gap-1 px-2 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-200 text-xs"
+                                  >
+                                    <FaCode className="text-xs" />
+                                    {tech}
+                                  </span>
+                                ),
+                              )}
                             </motion.div>
 
                             <motion.p
@@ -579,14 +594,15 @@ const Projects = () => {
                       >
                         {selectedProjectData.description}
                       </motion.p>
-                      
+
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.3 }}
                         className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50"
                         style={{
-                          maxWidth: videoAspectRatio === 'portrait' ? '450px' : '800px'
+                          maxWidth:
+                            videoAspectRatio === "portrait" ? "450px" : "800px",
                         }}
                       >
                         <video
@@ -598,8 +614,11 @@ const Projects = () => {
                           preload="auto"
                           onLoadedMetadata={(e) => {
                             const video = e.currentTarget;
-                            const isPortrait = video.videoHeight > video.videoWidth;
-                            setVideoAspectRatio(isPortrait ? 'portrait' : 'landscape');
+                            const isPortrait =
+                              video.videoHeight > video.videoWidth;
+                            setVideoAspectRatio(
+                              isPortrait ? "portrait" : "landscape",
+                            );
                           }}
                         >
                           <source
@@ -612,58 +631,63 @@ const Projects = () => {
                     </>
                   )}
 
-                  {selectedProjectData.images && selectedProjectData.images.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 }}
-                      className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl"
-                    >
-                      <AnimatePresence mode="wait">
-                        <div className="relative w-full h-[400px] sm:h-[450px] md:h-[500px]">
-                          <Image
-                            key={currentImageIndex}
-                            src={selectedProjectData.images[currentImageIndex]}
-                            alt={`Project image ${currentImageIndex + 1}`}
-                            fill
-                            sizes="100vw"
-                            className="object-contain"
-                            quality={75}
-                            priority
-                          />
+                  {selectedProjectData.images &&
+                    selectedProjectData.images.length > 0 && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="relative w-full mx-auto rounded-lg overflow-hidden shadow-2xl"
+                      >
+                        <AnimatePresence mode="wait">
+                          <div className="relative w-full h-[400px] sm:h-[450px] md:h-[500px]">
+                            <Image
+                              key={currentImageIndex}
+                              src={
+                                selectedProjectData.images[currentImageIndex]
+                              }
+                              alt={`Project image ${currentImageIndex + 1}`}
+                              fill
+                              sizes="100vw"
+                              className="object-contain"
+                              quality={75}
+                              priority
+                            />
+                          </div>
+                        </AnimatePresence>
+                        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                          {selectedProjectData.images.map((_, index) => (
+                            <button
+                              key={index}
+                              className={`w-2 h-2 rounded-full transition-colors ${
+                                index === currentImageIndex
+                                  ? "bg-white"
+                                  : "bg-white/50"
+                              }`}
+                              onClick={() => setCurrentImageIndex(index)}
+                            />
+                          ))}
                         </div>
-                      </AnimatePresence>
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                        {selectedProjectData.images.map((_, index) => (
-                          <button
-                            key={index}
-                            className={`w-2 h-2 rounded-full transition-colors ${
-                              index === currentImageIndex
-                                ? "bg-white"
-                                : "bg-white/50"
-                            }`}
-                            onClick={() => setCurrentImageIndex(index)}
-                          />
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
+                      </motion.div>
+                    )}
 
-                  {!selectedProjectData.video && (!selectedProjectData.images || selectedProjectData.images.length === 0) && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.3 }}
-                      className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50 p-12"
-                    >
-                      <div className="flex flex-col items-center justify-center text-center">
-                        <div className="text-6xl mb-4">📱</div>
-                        <p className="text-gray-400 text-lg">
-                          Media coming soon
-                        </p>
-                      </div>
-                    </motion.div>
-                  )}
+                  {!selectedProjectData.video &&
+                    (!selectedProjectData.images ||
+                      selectedProjectData.images.length === 0) && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.3 }}
+                        className="relative w-full max-w-2xl mx-auto rounded-lg overflow-hidden shadow-2xl bg-gray-800/50 p-12"
+                      >
+                        <div className="flex flex-col items-center justify-center text-center">
+                          <div className="text-6xl mb-4">📱</div>
+                          <p className="text-gray-400 text-lg">
+                            Media coming soon
+                          </p>
+                        </div>
+                      </motion.div>
+                    )}
                 </motion.div>
               )}
             </AnimatePresence>

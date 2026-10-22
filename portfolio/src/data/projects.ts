@@ -10,8 +10,8 @@ export interface Project {
   year?: string;
   techStack: string[];
   video?: string;
-  /** Second of the video to show as the card thumbnail (defaults to 0.5). */
-  thumbAt?: number;
+  /** Small still shown on the card; the video itself only loads on hover or when opened. */
+  poster?: string;
   images?: string[];
   /** A (hopefully funny) note shown in place of media until a demo exists. */
   cover?: string;
@@ -31,6 +31,7 @@ export const projects: Project[] = [
   {
     slug: "tablet-builder",
     video: "/projects/tablet-builder.mp4",
+    poster: "/projects/posters/tablet-builder.webp",
     title: "Tablet Builder Puzzle",
     tagline: "Bachelor thesis: a web game that teaches how tablets work",
     description:
@@ -47,8 +48,8 @@ export const projects: Project[] = [
   },
   {
     slug: "nl-to-sql",
-    video: "/projects/nl2sql.mp4",
-    thumbAt: 14,
+    video: "/projects/nl-to-sql.mp4",
+    poster: "/projects/posters/nl-to-sql.webp",
     title: "Natural Language to SQL",
     tagline: "Ask a question in plain English, get a safe SQL query",
     description:
@@ -110,6 +111,7 @@ export const projects: Project[] = [
   {
     slug: "readflow",
     video: "/projects/readflow.mp4",
+    poster: "/projects/posters/readflow.webp",
     title: "ReadFlow",
     tagline: "A calm, distraction-free reading app",
     description:
@@ -121,6 +123,7 @@ export const projects: Project[] = [
   {
     slug: "expense-tracker",
     video: "/projects/expense-tracker.mp4",
+    poster: "/projects/posters/expense-tracker.webp",
     title: "Expense Tracker",
     tagline: "Offline-first budgeting with a dark fintech look",
     description:
@@ -147,12 +150,14 @@ export const projects: Project[] = [
     category: "Mobile",
     year: "2025",
     techStack: ["React Native", "Expo", "Supabase", "Push Notifications"],
-    video: "/homebase_preview.mp4",
+    video: "/projects/homebase.mp4",
+    poster: "/projects/posters/homebase.webp",
     featured: true,
   },
   {
     slug: "hiryo",
     video: "/projects/hiryo.mp4",
+    poster: "/projects/posters/hiryo.webp",
     title: "Hiryo – Family Safety",
     tagline: "Live location, geofencing and SOS alerts",
     description:
@@ -176,7 +181,8 @@ export const projects: Project[] = [
       "A mobile support application with user authentication, real-time support chat and an admin dashboard, covering both the React Native client and the Node.js backend.",
     category: "Mobile",
     techStack: ["React Native", "TypeScript", "Node.js", "Express"],
-    video: "/helper.mp4",
+    video: "/projects/helper.mp4",
+    poster: "/projects/posters/helper.webp",
   },
   {
     slug: "mahsooly",
@@ -208,7 +214,8 @@ export const projects: Project[] = [
       "An internship management system for the German University in Cairo: student registration, company postings, application tracking and an admin dashboard.",
     category: "Web",
     techStack: ["React", "Tailwind CSS"],
-    video: "/scad.mp4",
+    video: "/projects/scad.mp4",
+    poster: "/projects/posters/scad.webp",
   },
   {
     slug: "goe",
@@ -218,7 +225,8 @@ export const projects: Project[] = [
       "A hotel booking platform with city-based search, popular destinations, featured hotels and booking management.",
     category: "Web",
     techStack: ["Next.js", "TypeScript", "Tailwind CSS"],
-    video: "/goe.mp4",
+    video: "/projects/goe.mp4",
+    poster: "/projects/posters/goe.webp",
   },
   {
     slug: "tomasulo",
@@ -238,7 +246,8 @@ export const projects: Project[] = [
       "An OS process-management simulator in C implementing FIFO, Round Robin and Multi-Level Feedback Queue scheduling, with an ncurses terminal UI that shows memory, queues and output live.",
     category: "Systems",
     techStack: ["C", "ncurses", "Scheduling", "Memory Management"],
-    video: "/os_project.mp4",
+    video: "/projects/os-simulator.mp4",
+    poster: "/projects/posters/os-simulator.webp",
   },
   {
     slug: "color-sorter",
@@ -258,7 +267,8 @@ export const projects: Project[] = [
       "A Plants vs Zombies–style strategy game set in the Attack on Titan universe, with multiple unit types, resource management and rising difficulty.",
     category: "Games",
     techStack: ["Java", "JavaFX", "OOP"],
-    video: "/Attack on Titan.mp4",
+    video: "/projects/attack-on-titan.mp4",
+    poster: "/projects/posters/attack-on-titan.webp",
   },
   {
     slug: "flappy-bird",
@@ -268,7 +278,8 @@ export const projects: Project[] = [
       "A recreation of Flappy Bird with custom graphics, obstacle generation, collision detection and score tracking.",
     category: "Games",
     techStack: ["Java Swing", "Game Physics"],
-    video: "/Flappy Bird.mp4",
+    video: "/projects/flappy-bird.mp4",
+    poster: "/projects/posters/flappy-bird.webp",
   },
   {
     slug: "connect-4",
@@ -278,7 +289,8 @@ export const projects: Project[] = [
       "Connect 4 with smooth animations, a player-vs-player mode, win detection, score tracking and replay.",
     category: "Games",
     techStack: ["Java Swing"],
-    video: "/Connect 4.mp4",
+    video: "/projects/connect-4.mp4",
+    poster: "/projects/posters/connect-4.webp",
   },
   {
     slug: "tic-tac-toe",
@@ -288,6 +300,7 @@ export const projects: Project[] = [
       "Tic Tac Toe with a clean interface and an AI opponent with multiple difficulty levels.",
     category: "Games",
     techStack: ["Java Swing", "OOP"],
-    video: "/tictactoe(1).mp4",
+    video: "/projects/tic-tac-toe.mp4",
+    poster: "/projects/posters/tic-tac-toe.webp",
   },
 ];

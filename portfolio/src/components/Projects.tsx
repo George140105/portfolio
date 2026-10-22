@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { FaArrowRight, FaPlay } from "react-icons/fa";
 import ProjectCover from "~/components/ProjectCover";
 import ProjectModal from "~/components/ProjectModal";
-import { SkeletonImage, SkeletonVideo } from "~/components/ui/Media";
+import { SkeletonImage } from "~/components/ui/Media";
 import { categories, projects, type Project, type ProjectCategory } from "~/data/projects";
 
 type Filter = "All" | ProjectCategory;
@@ -20,31 +20,49 @@ const fitClass = (portrait: boolean) =>
 const CardMedia = ({ project }: { project: Project }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [portrait, setPortrait] = useState(false);
+  // Cards show a tiny poster; the video is only fetched once someone hovers the card.
+  const [wantVideo, setWantVideo] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
-  // Metadata may already be loaded before React attached its listener.
   useEffect(() => {
-    const v = videoRef.current;
-    if (v && v.readyState >= 1) setPortrait(v.videoHeight > v.videoWidth);
-  }, []);
+    if (wantVideo) videoRef.current?.play().catch(() => {});
+  }, [wantVideo]);
 
   if (project.video) {
     return (
       <div
         className="relative h-full w-full bg-muted"
-        onMouseEnter={() => videoRef.current?.play().catch(() => {})}
-        onMouseLeave={() => videoRef.current?.pause()}
+        onPointerEnter={(e) => {
+          if (e.pointerType !== "mouse") return;
+          if (wantVideo) videoRef.current?.play().catch(() => {});
+          else setWantVideo(true);
+        }}
+        onPointerLeave={() => videoRef.current?.pause()}
       >
-        <SkeletonVideo
-          ref={videoRef}
-          // The fragment makes browsers decode a real frame instead of showing a black box.
-          src={`${project.video}#t=${project.thumbAt ?? 0.5}`}
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          onLoadedMetadata={(e) => setPortrait(e.currentTarget.videoHeight > e.currentTarget.videoWidth)}
-          className={`h-full w-full transition-transform duration-700 ${fitClass(portrait)}`}
-        />
+        {project.poster && (
+          <SkeletonImage
+            src={project.poster}
+            alt=""
+            fill
+            unoptimized
+            onLoad={(e) => setPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
+            className={`transition-transform duration-700 ${fitClass(portrait)}`}
+          />
+        )}
+        {wantVideo && (
+          <video
+            ref={videoRef}
+            src={project.video}
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onPlaying={() => setPlaying(true)}
+            className={`absolute inset-0 h-full w-full transition-[opacity,transform] duration-500 ${fitClass(portrait)} ${
+              playing ? "opacity-100" : "opacity-0"
+            }`}
+          />
+        )}
         <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur transition-opacity group-hover:opacity-0">
           <FaPlay size={9} className="ml-0.5" />
         </span>

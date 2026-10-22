@@ -122,7 +122,21 @@ const ProjectModal = ({ projects, index, onChange, onClose }: Props) => {
                       hasMedia ? "h-[38dvh] bg-black sm:h-[52vh]" : "h-44 sm:h-52"
                     }`}
                   >
-                    {project.video ? (
+                    {project.video && project.poster ? (
+                      // The poster shows instantly while the video buffers.
+                      <video
+                        key={project.video}
+                        src={project.video}
+                        poster={project.poster}
+                        preload="auto"
+                        controls
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className="h-full w-full object-contain"
+                      />
+                    ) : project.video ? (
                       <SkeletonVideo
                         key={project.video}
                         src={project.video}

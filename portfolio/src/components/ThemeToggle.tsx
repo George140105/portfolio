@@ -1,51 +1,40 @@
 "use client";
 
+import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { HiLightBulb } from "react-icons/hi";
+import { HiMoon, HiSun } from "react-icons/hi";
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  // The theme is only known on the client, so hold the button's place until then.
+  if (!mounted) return <span className="skeleton block h-10 w-10 rounded-full" aria-hidden />;
 
-  const toggleTheme = () => {
-    const newTheme = theme === "dark" ? "light" : "dark";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
+  const isDark = resolvedTheme !== "light";
 
   return (
-    <motion.button
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="fixed bottom-8 right-8 z-50 p-3 rounded-full bg-zinc-800 dark:bg-zinc-100 shadow-lg hover:scale-110 transition-transform"
-      onClick={toggleTheme}
-      whileTap={{ scale: 0.9 }}
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full hover:bg-muted"
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
-      <motion.div
-        animate={{
-          rotate: theme === "dark" ? 0 : 360,
-          scale: theme === "dark" ? 0.8 : 1,
-        }}
-        transition={{ type: "spring", stiffness: 200, damping: 10 }}
-      >
-        <HiLightBulb
-          className={`w-6 h-6 ${
-            theme === "dark"
-              ? "text-zinc-600"
-              : "text-yellow-400 drop-shadow-[0_0_8px_rgba(250,204,21,0.5)]"
-          }`}
-        />
-      </motion.div>
-    </motion.button>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={isDark ? "moon" : "sun"}
+          initial={{ y: 16, opacity: 0, rotate: -90 }}
+          animate={{ y: 0, opacity: 1, rotate: 0 }}
+          exit={{ y: -16, opacity: 0, rotate: 90 }}
+          transition={{ duration: 0.2 }}
+        >
+          {isDark ? <HiMoon size={18} /> : <HiSun size={18} />}
+        </motion.span>
+      </AnimatePresence>
+    </button>
   );
 }

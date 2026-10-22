@@ -1,130 +1,186 @@
 "use client";
-import { motion } from "framer-motion";
-import { FaPython, FaJava, FaReact } from "react-icons/fa";
-import { SiTypescript, SiTailwindcss, SiC, SiNextdotjs } from "react-icons/si";
-import { TbBrandReactNative } from "react-icons/tb";
+import { createTimeline, splitText, stagger, svg, utils } from "animejs";
+import { motion } from "motion/react";
+import { useEffect, useRef } from "react";
+import { FaArrowDown, FaGithub, FaLinkedin } from "react-icons/fa";
+import CountUp from "~/components/ui/CountUp";
+import Magnet from "~/components/ui/Magnet";
+import { SkeletonImage } from "~/components/ui/Media";
+import RotatingText from "~/components/ui/RotatingText";
+import TiltedCard from "~/components/ui/TiltedCard";
+import { projects } from "~/data/projects";
 
-const About = () => {
+const fade = (delay: number) => ({
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
+});
+
+const Hero = () => {
+  const nameRef = useRef<HTMLHeadingElement>(null);
+  const underlineRef = useRef<SVGPathElement>(null);
+
+  // Intro choreography with anime.js: letters rise in one by one, then the underline is drawn.
+  useEffect(() => {
+    const name = nameRef.current;
+    const underline = underlineRef.current;
+    if (!name || !underline) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      name.style.visibility = "visible";
+      return;
+    }
+
+    // Park the letters below their clip boxes and hide the underline before revealing the heading.
+    const split = splitText(name, { chars: { wrap: "clip" } });
+    const [drawable] = svg.createDrawable(underline);
+    utils.set(split.chars, { y: "110%" });
+    utils.set(drawable, { draw: "0 0" });
+    name.style.visibility = "visible";
+    const tl = createTimeline({ defaults: { ease: "outExpo" } })
+      .add(split.chars, { y: ["110%", "0%"], duration: 900, delay: stagger(35) }, 150)
+      .add(drawable, { draw: ["0 0", "0 1"], duration: 900, ease: "inOutQuad" }, "-=300");
+
+    return () => {
+      tl.revert();
+      split.revert();
+    };
+  }, []);
+
   return (
-    <section id="about" className="py-32 bg-background mt-10">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="mb-16"
-        >
-          <span className="text-5xl font-medium text-foreground">
-            Hi there! I'm
-          </span>
-          <h1 className="text-6xl md:text-7xl py-4 font-extrabold bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 bg-clip-text text-transparent my-3">
-            George Amgad
+    <section id="home" className="relative px-4 pb-20 pt-28 sm:px-6 md:pt-36">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[1.25fr_0.75fr] md:gap-14">
+        <div className="relative z-10">
+          <motion.p {...fade(0)} className="font-mono text-xs text-muted-foreground sm:text-sm">
+            Software engineer · Cairo, Egypt
+          </motion.p>
+
+          <h1
+            ref={nameRef}
+            style={{ visibility: "hidden" }}
+            className="mt-4 font-serif text-[clamp(3.5rem,13vw,8.5rem)] leading-[0.9] tracking-tight"
+          >
+            George <br className="hidden sm:block" />
+            <span className="relative inline-block">
+              Amgad
+              <svg
+                aria-hidden
+                viewBox="0 0 300 20"
+                preserveAspectRatio="none"
+                className="absolute -bottom-2 left-0 h-3 w-full overflow-visible text-primary sm:-bottom-3 sm:h-4"
+              >
+                <path
+                  ref={underlineRef}
+                  d="M3 14 C 60 4, 120 4, 170 10 S 260 17, 297 6"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
           </h1>
-          <span className="text-3xl font-bold text-foreground block mt-2">
-            Mobile App Developer & Software Engineer
-          </span>
-        </motion.div>
+
+          <motion.p {...fade(0.5)} className="mt-8 text-2xl leading-snug sm:text-3xl">
+            I build{" "}
+            <RotatingText
+              words={["mobile apps", "websites", "data pipelines"]}
+              className="font-serif italic text-primary"
+            />
+          </motion.p>
+
+          <motion.p
+            {...fade(0.6)}
+            className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
+          >
+            I&apos;m a final-year Computer Science student at the German University in Cairo. I&apos;ve
+            shipped a family-safety app that had to keep location working in the background on
+            Android, and lately I&apos;ve been building ML models, computer-vision pipelines and a
+            natural-language-to-SQL system. Next up: a Master&apos;s degree.
+          </motion.p>
+
+          <motion.div {...fade(0.7)} className="mt-8 flex flex-wrap items-center gap-3">
+            <Magnet>
+              <a
+                href="#journey"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-primary hover:text-primary-foreground"
+              >
+                Follow my journey
+                <FaArrowDown className="transition-transform group-hover:translate-y-0.5" size={12} />
+              </a>
+            </Magnet>
+            <a
+              href="/George_Amgad_Resume.pdf"
+              download
+              className="inline-flex items-center rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium transition-colors hover:border-foreground"
+            >
+              Download resume
+            </a>
+            <div className="ml-1 flex gap-1">
+              {[
+                { href: "https://github.com/George140105", label: "GitHub", Icon: FaGithub },
+                {
+                  href: "https://www.linkedin.com/in/george-amgad-reyad/",
+                  label: "LinkedIn",
+                  Icon: FaLinkedin,
+                },
+              ].map(({ href, label, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                >
+                  <Icon size={19} />
+                </a>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.dl
+            {...fade(0.85)}
+            className="mt-12 grid max-w-xl grid-cols-2 gap-y-6 border-t border-border pt-6 sm:grid-cols-4"
+          >
+            {[
+              { value: <CountUp to={1.05} decimals={2} />, label: "GPA, German scale" },
+              { value: "Top 1%", label: "IGCSE, nationally" },
+              { value: <CountUp to={2} />, label: "Industry roles" },
+              { value: <CountUp to={projects.length} />, label: "Projects" },
+            ].map((s) => (
+              <div key={s.label}>
+                <dd className="font-serif text-4xl leading-none">{s.value}</dd>
+                <dt className="mt-2 text-xs text-muted-foreground">{s.label}</dt>
+              </div>
+            ))}
+          </motion.dl>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="max-w-3xl"
+          initial={{ opacity: 0, scale: 0.96, rotate: -2 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="order-first md:order-last"
         >
-          <p className="text-2xl text-foreground mb-12 leading-relaxed">
-            I am a passionate mobile app developer specializing in React Native
-            and cross-platform development. With a strong foundation in software
-            engineering, I create intuitive, performant mobile applications that
-            deliver seamless user experiences across iOS and Android platforms.
-            I enjoy building apps that solve real-world problems and bring value
-            to users' daily lives.
+          <TiltedCard className="w-36 sm:w-44 md:w-full">
+            <figure className="relative aspect-square overflow-hidden rounded-2xl bg-muted shadow-2xl shadow-black/20 md:aspect-[4/5] md:rounded-[1.75rem]">
+              <SkeletonImage
+                src="/george.jpg"
+                alt="George Amgad smiling, in a grey suit, standing in front of a tree"
+                fill
+                priority
+                sizes="(max-width: 768px) 176px, 420px"
+                className="object-cover object-[50%_18%]"
+              />
+            </figure>
+          </TiltedCard>
+          <p className="mt-3 hidden font-mono text-xs text-muted-foreground md:block">
+            German University in Cairo · Class of 2027
           </p>
-          <div>
-            <h3 className="text-2xl font-bold text-white mb-6">Skills</h3>
-            <div className="space-y-8">
-              <div>
-                <h4 className="text-lg font-semibold text-blue-400 mb-3">
-                  Mobile Development
-                </h4>
-                <ul className="flex flex-wrap gap-3">
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/40 hover:border-blue-500/60 transition-colors shadow-lg shadow-blue-500/20">
-                    <TbBrandReactNative className="mr-2 text-blue-400 text-xl" />
-                    <span className="text-gray-300 font-semibold">
-                      React Native
-                    </span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/40 hover:border-blue-500/60 transition-colors shadow-lg shadow-blue-500/20">
-                    <SiTypescript className="mr-2 text-blue-400" />
-                    <span className="text-gray-300 font-semibold">
-                      TypeScript
-                    </span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">iOS & Android</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">Cross-Platform</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">Push Notifications</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">Firebase</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">Geolocation APIs</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold text-blue-400 mb-3">
-                  Web Development
-                </h4>
-                <ul className="flex flex-wrap gap-3">
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <FaReact className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">React</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <SiNextdotjs className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">Next.js</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <SiTailwindcss className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">Tailwind CSS</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <span className="text-gray-300">Node.js</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h4 className="text-lg font-semibold text-blue-400 mb-3">
-                  Programming Languages
-                </h4>
-                <ul className="flex flex-wrap gap-3">
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <FaJava className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">Java</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <FaPython className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">Python</span>
-                  </li>
-                  <li className="flex items-center px-4 py-2 rounded-full bg-zinc-800 border border-blue-500/20 hover:border-blue-500/40 transition-colors">
-                    <SiC className="mr-2 text-blue-400" />
-                    <span className="text-gray-300">C</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
         </motion.div>
       </div>
     </section>
   );
 };
 
-export default About;
+export default Hero;

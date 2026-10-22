@@ -1,21 +1,31 @@
 "use client";
-import { motion } from "framer-motion";
-import {
-  FaGithub,
-  FaLinkedin,
-  FaFileDownload,
-  FaSpinner,
-} from "react-icons/fa";
-import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { motion } from "motion/react";
+import { useState } from "react";
+import { FaArrowRight, FaSpinner } from "react-icons/fa";
+import Magnet from "~/components/ui/Magnet";
 import { useModal } from "~/providers/ModalProvider";
 
-const Footer = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
+const EMAIL = "george05.amgad@gmail.com";
+
+const links = [
+  { href: `mailto:${EMAIL}`, label: "Email", value: EMAIL },
+  { href: "https://github.com/George140105", label: "GitHub", value: "George140105" },
+  {
+    href: "https://www.linkedin.com/in/george-amgad-reyad/",
+    label: "LinkedIn",
+    value: "george-amgad-reyad",
+  },
+  { href: "/George_Amgad_Resume.pdf", label: "Resume", value: "Download PDF", download: true },
+];
+
+const inputClass =
+  "w-full border-b border-border bg-transparent py-3 text-foreground placeholder:text-muted-foreground/60 focus:border-foreground focus:outline-none transition-colors";
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+const Contact = () => {
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showModal } = useModal();
 
@@ -32,11 +42,11 @@ const Footer = () => {
           email: formData.email,
           message: formData.message,
         },
-        "bbG9o0rl9QRW9C6Qu",
+        "bbG9o0rl9QRW9C6Qu"
       );
       showModal("success");
       setFormData({ name: "", email: "", message: "" });
-    } catch (error) {
+    } catch {
       showModal("error");
     } finally {
       setIsSubmitting(false);
@@ -44,140 +54,123 @@ const Footer = () => {
   };
 
   return (
-    <footer
-      id="contact"
-      className="from-slate-100 via-slate-50 to-slate-100 py-12 relative"
-    >
-      <div className="absolute inset-0 bg-primary/5"></div>
-      <div className="container mx-auto px-14 max-w-5xl relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Contact Form */}
-          <motion.div
+    <footer id="contact" className="relative px-4 pb-10 pt-24 sm:px-6 sm:pt-32">
+      <div className="mx-auto max-w-6xl">
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7, ease }}
+          className="font-serif text-5xl leading-none sm:text-6xl md:text-8xl"
+        >
+          Say <span className="italic text-primary">hello</span>
+        </motion.h2>
+        <p className="mt-5 max-w-xl text-muted-foreground sm:text-lg">
+          I&apos;m open to internships, research positions and engineering roles. The quickest way
+          to reach me is email, or leave a message here.
+        </p>
+
+        <div className="mt-14 grid gap-14 md:grid-cols-[1fr_0.8fr] md:gap-20">
+          <motion.form
+            onSubmit={handleSubmit}
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, ease }}
+            className="space-y-6"
           >
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              Get in Touch
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="name" className="block text-sm text-foreground">
-                  Name
-                </label>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <label className="block text-sm">
+                <span className="font-mono text-xs text-muted-foreground">Name</span>
                 <input
-                  id="name"
                   type="text"
-                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
+                  required
+                  autoComplete="name"
+                  placeholder="Your name"
+                  className={inputClass}
                   value={formData.name}
-                  onChange={(e) =>
-                    setFormData({ ...formData, name: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 />
-              </div>
-              <div className="space-y-1">
-                <label
-                  htmlFor="email"
-                  className="block text-sm text-foreground"
-                >
-                  Email
-                </label>
+              </label>
+              <label className="block text-sm">
+                <span className="font-mono text-xs text-muted-foreground">Email</span>
                 <input
-                  id="email"
                   type="email"
-                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
+                  required
+                  autoComplete="email"
+                  placeholder="you@example.com"
+                  className={inputClass}
                   value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
-              </div>
-              <div className="space-y-1">
-                <label
-                  htmlFor="message"
-                  className="block text-sm text-foreground"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={4}
-                  className="w-full px-4 py-1.5 bg-card rounded-lg border border-primary/20 focus:border-primary/40 focus:outline-none text-foreground"
-                  value={formData.message}
-                  onChange={(e) =>
-                    setFormData({ ...formData, message: e.target.value })
-                  }
-                />
-              </div>
+              </label>
+            </div>
+            <label className="block text-sm">
+              <span className="font-mono text-xs text-muted-foreground">Message</span>
+              <textarea
+                rows={4}
+                required
+                placeholder="Hi George…"
+                className={`${inputClass} resize-none`}
+                value={formData.message}
+                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              />
+            </label>
+            <Magnet>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-2 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
+                className="group inline-flex min-w-[10rem] items-center justify-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-primary hover:text-primary-foreground disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? (
                   <FaSpinner className="animate-spin" />
                 ) : (
-                  "Send Message"
+                  <>
+                    Send message
+                    <FaArrowRight size={11} className="transition-transform group-hover:translate-x-0.5" />
+                  </>
                 )}
               </button>
-            </form>
-          </motion.div>
+            </Magnet>
+          </motion.form>
 
-          {/* Links */}
-          <motion.div
+          <motion.ul
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="space-y-6"
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1, ease }}
+            className="border-t border-border"
           >
-            <div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">
-                Connect
-              </h3>
-              <div className="flex gap-4">
+            {links.map(({ href, label, value, download }) => (
+              <li key={label}>
                 <a
-                  href="https://github.com/George140105"
-                  target="_blank"
+                  href={href}
+                  download={download || undefined}
+                  target={href.startsWith("http") ? "_blank" : undefined}
                   rel="noopener noreferrer"
-                  className="p-3 bg-card rounded-full hover:bg-muted transition-colors"
+                  className="group flex items-baseline justify-between gap-4 border-b border-border py-4"
                 >
-                  <FaGithub className="text-2xl text-foreground" />
+                  <span className="font-mono text-xs text-muted-foreground">{label}</span>
+                  <span className="flex min-w-0 items-center gap-2 text-right">
+                    <span className="truncate transition-colors group-hover:text-primary">{value}</span>
+                    <FaArrowRight
+                      size={10}
+                      className="shrink-0 -rotate-45 text-muted-foreground transition-transform group-hover:rotate-0 group-hover:text-primary"
+                    />
+                  </span>
                 </a>
-                <a
-                  href="https://www.linkedin.com/in/george-amgad-reyad/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-3 bg-card rounded-full hover:bg-muted transition-colors"
-                >
-                  <FaLinkedin className="text-2xl text-foreground" />
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-2xl font-bold text-foreground mb-4">
-                Resume
-              </h3>
-              <a
-                href="/George_mobile_dev_resume_2026.pdf"
-                download
-                className="inline-flex items-center px-6 py-3 bg-foreground text-background rounded-lg hover:bg-foreground/50 transition-colors "
-              >
-                <FaFileDownload className="mr-2" />
-                Download CV
-              </a>
-            </div>
-          </motion.div>
+              </li>
+            ))}
+          </motion.ul>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-primary/10 text-center text-muted-foreground">
-          <p>
-            &copy; {new Date().getFullYear()} George Amgad. All rights reserved.
-          </p>
-        </div>
+        <p className="mt-24 flex flex-col gap-1 border-t border-border pt-6 font-mono text-xs text-muted-foreground sm:flex-row sm:justify-between">
+          <span>&copy; {new Date().getFullYear()} George Amgad</span>
+          <span>Cairo, Egypt</span>
+        </p>
       </div>
     </footer>
   );
 };
 
-export default Footer;
+export default Contact;

@@ -1,114 +1,28 @@
 "use client";
-import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import About from "~/components/About";
-import Footer from "~/components/Footer";
+import { MotionConfig } from "motion/react";
+import { useEffect } from "react";
+import Contact from "~/components/Contact";
 import Header from "~/components/Header";
+import Hero from "~/components/Hero";
+import Journey from "~/components/Journey";
 import Projects from "~/components/Projects";
-import Timeline from "~/components/Timeline";
+import Skills from "~/components/Skills";
 
 export default function Home() {
-  const [isMobile, setIsMobile] = useState(false);
-
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-
-    return () => window.removeEventListener("resize", checkMobile);
+    document.documentElement.classList.add("hydrated");
   }, []);
 
   return (
-    <div className="flex ">
-      {!isMobile ? (
-        <>
-          <Header />
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className={`min-h-screen  bg-background text-foreground scroll-smooth ${
-              isMobile
-                ? "w-full"
-                : "ml-36 md:ml-48 w-[calc(100%-9rem)] md:w-[calc(100%-12rem)]"
-            }`}
-          >
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <About />
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Timeline />
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Projects />
-            </motion.div>
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <Footer />
-            </motion.div>
-          </motion.div>
-        </>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="min-h-screen bg-background text-foreground scroll-smooth w-full"
-        >
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <About />
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <Timeline />
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Projects />
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <Footer />
-          </motion.div>
-        </motion.div>
-      )}
-    </div>
+    <MotionConfig reducedMotion="user">
+      <Header />
+      <main>
+        <Hero />
+        <Journey />
+        <Projects />
+        <Skills />
+        <Contact />
+      </main>
+    </MotionConfig>
   );
 }

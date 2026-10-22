@@ -1,99 +1,132 @@
 "use client";
-
-import { motion } from "framer-motion";
+import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { useEffect, useState } from "react";
+import { HiMenuAlt3, HiX } from "react-icons/hi";
+import ThemeToggle from "~/components/ThemeToggle";
+
+const sections = [
+  { id: "home", label: "Home" },
+  { id: "journey", label: "Journey" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+];
 
 const Header = () => {
-  const [activeSection, setActiveSection] = useState("");
-
-  const scrollToSection = (id: string) => {
-    // Map 'home' to 'about' and 'about' to 'timeline'
-    const sectionMap: { [key: string]: string } = {
-      home: "about",
-      about: "timeline",
-      projects: "projects",
-      contact: "contact",
-    };
-
-    const element = document.getElementById(sectionMap[id] || id);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  };
+  const [active, setActive] = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollYProgress } = useScroll();
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
   useEffect(() => {
-    setActiveSection("");
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    const observerOptions = {
-      rootMargin: "-10% 0px -80% 0px",
-      threshold: [0.2, 0.5, 0.8],
-    };
-
-    const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      const visibleSections = entries
-        .filter((entry) => entry.isIntersecting)
-        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-
-      if (visibleSections.length > 0) {
-        const currentSection = visibleSections[0].target.id;
-        // Map the sections back for the active state
-        if (currentSection === "about") {
-          setActiveSection("home");
-        } else if (currentSection === "timeline") {
-          setActiveSection("about");
-        } else {
-          setActiveSection(currentSection);
-        }
-      }
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-
-    // Observe all sections including timeline
-    const sections = ["about", "timeline", "projects", "contact"];
-    sections.forEach((section) => {
-      const element = document.getElementById(section);
-      if (element) {
-        observer.observe(element);
-      } else {
-        console.warn(`Section with id '${section}' not found`);
-      }
+    // A section is "active" when it crosses the upper-middle band of the viewport.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+    sections.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
     });
 
     return () => {
+      window.removeEventListener("scroll", onScroll);
       observer.disconnect();
     };
   }, []);
 
   return (
-    <header className="fixed left-0 top-0 h-screen w-36 md:w-48 bg-card/95 backdrop-blur-sm z-50 flex items-center shadow-lg border-r border-primary/10">
-      <div className="w-full py-6">
-        <motion.nav
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex flex-col gap-14 items-center"
-        >
-          {["home", "about", "projects", "contact"].map((section) => (
+    <header className="fixed inset-x-0 top-0 z-50">
+      <motion.div
+        style={{ scaleX: progress }}
+        className="absolute inset-x-0 top-0 h-[2px] origin-left bg-primary"
+      />
+      <div
+        className={`border-b transition-colors duration-300 ${
+          scrolled || menuOpen
+            ? "border-border bg-background/80 backdrop-blur-md"
+            : "border-transparent"
+        }`}
+      >
+        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+          <a href="#home" className="font-serif text-2xl leading-none">
+            George Amgad<span className="text-primary">.</span>
+          </a>
+
+          <div className="hidden items-center gap-7 md:flex">
+            {sections.map(({ id, label }) => (
+              <a
+                key={id}
+                href={`#${id}`}
+                aria-current={active === id ? "true" : undefined}
+                className={`relative py-1 text-sm transition-colors ${
+                  active === id ? "text-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {label}
+                {active === id && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    className="absolute inset-x-0 -bottom-0.5 h-px bg-foreground"
+                    transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                  />
+                )}
+              </a>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1">
+            <ThemeToggle />
             <button
-              key={section}
-              onClick={() => scrollToSection(section)}
-              className={`text-lg font-medium ${
-                activeSection === section ? "text-primary" : "text-foreground"
-              } hover:text-primary transition-all capitalize hover:scale-110 relative group writing-mode-vertical px-3 py-2`}
+              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted md:hidden"
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
             >
-              <span className="inline-block">{section}</span>
-              <span
-                className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-1 ${
-                  activeSection === section ? "w-8" : "w-0"
-                } bg-primary transition-all group-hover:w-8 rounded-full`}
-              ></span>
+              {menuOpen ? <HiX size={22} /> : <HiMenuAlt3 size={22} />}
             </button>
-          ))}
-        </motion.nav>
+          </div>
+        </nav>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden md:hidden"
+            >
+              <div className="flex flex-col px-4 pb-4">
+                {sections.map(({ id, label }, i) => (
+                  <motion.a
+                    key={id}
+                    href={`#${id}`}
+                    onClick={() => setMenuOpen(false)}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.04 * i }}
+                    className={`flex items-baseline justify-between border-b border-border py-3 font-serif text-3xl ${
+                      active === id ? "text-primary" : ""
+                    }`}
+                  >
+                    {label}
+                    <span className="font-mono text-xs text-muted-foreground">0{i + 1}</span>
+                  </motion.a>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

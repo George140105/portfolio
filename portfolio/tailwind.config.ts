@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
+
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -9,19 +11,22 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
-      backgroundColor: {
-        background: "rgb(var(--background) / <alpha-value>)",
-      },
-      textColor: {
-        foreground: "rgb(var(--foreground) / <alpha-value>)",
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
       },
       colors: {
-        background: "rgb(var(--background) / <alpha-value>)",
-        foreground: "rgb(var(--foreground) / <alpha-value>)",
-        card: "rgb(var(--card) / <alpha-value>)",
-        "card-foreground": "rgb(var(--card-foreground) / <alpha-value>)",
-        primary: "rgb(var(--primary) / <alpha-value>)",
-        "primary-foreground": "rgb(var(--primary-foreground) / <alpha-value>)",
+        background: token("background"),
+        foreground: token("foreground"),
+        card: token("card"),
+        "card-foreground": token("card-foreground"),
+        muted: token("muted"),
+        "muted-foreground": token("muted-foreground"),
+        border: token("border"),
+        primary: token("primary"),
+        "primary-foreground": token("primary-foreground"),
+        secondary: token("secondary"),
       },
     },
   },

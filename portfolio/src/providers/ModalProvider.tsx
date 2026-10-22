@@ -1,6 +1,5 @@
 "use client";
 import { createContext, useContext, useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import Modal from "~/components/Modal";
 
 interface ModalContextType {
@@ -21,13 +20,11 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
   return (
     <ModalContext.Provider value={{ showModal }}>
       {children}
-      <AnimatePresence>
-        <Modal
-          isOpen={modalStatus !== null}
-          onClose={() => setModalStatus(null)}
-          status={modalStatus}
-        />
-      </AnimatePresence>
+      <Modal
+        isOpen={modalStatus !== null}
+        onClose={() => setModalStatus(null)}
+        status={modalStatus}
+      />
     </ModalContext.Provider>
   );
 }

@@ -155,7 +155,7 @@ const Projects = () => {
           className="max-w-xl"
         >
           <h2 className="font-serif text-5xl leading-none sm:text-6xl md:text-7xl">
-            Things I&apos;ve <span className="italic text-primary">built</span>
+            Things I&apos;ve <span className="italic text-highlight">built</span>
           </h2>
           <p className="mt-5 text-muted-foreground sm:text-lg">
             Apps, models, pipelines, simulators and a few games. Filter by area, then open a card

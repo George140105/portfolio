@@ -3,32 +3,38 @@
 @tailwind utilities;
 
 @layer base {
-  /* Warm paper & ink, with a terracotta accent and a leaf-green secondary. */
+  /* Palette: #1B4EF5 royal · #3874FF bright · #5996FF sky · #F4CEFF lavender. */
   :root {
-    --background: 246 243 238;
-    --foreground: 28 26 23;
-    --card: 255 253 249;
-    --card-foreground: 28 26 23;
-    --muted: 235 230 222;
-    --muted-foreground: 107 100 90;
-    --border: 224 217 206;
-    --primary: 190 78 40;
-    --primary-foreground: 255 253 249;
-    --secondary: 63 107 58;
-    --blob-opacity: 0.16;
+    --background: 250 248 255;
+    --foreground: 16 22 54;
+    --card: 255 255 255;
+    --card-foreground: 16 22 54;
+    --muted: 241 236 255;
+    --muted-foreground: 84 92 130;
+    --border: 226 220 248;
+    --primary: 27 78 245; /* #1B4EF5 */
+    --primary-foreground: 255 255 255;
+    --secondary: 89 150 255; /* #5996FF */
+    --glow: 244 206 255; /* #F4CEFF */
+    --glow-2: 27 78 245;
+    --highlight: 27 78 245; /* accent words; blue in light mode */
+    --blob-opacity: 0.5;
   }
 
   .dark {
-    --background: 17 16 14;
-    --foreground: 237 232 224;
-    --card: 26 25 22;
-    --card-foreground: 237 232 224;
-    --muted: 38 36 32;
-    --muted-foreground: 163 155 143;
-    --border: 46 43 38;
-    --primary: 230 128 84;
-    --primary-foreground: 17 16 14;
-    --secondary: 143 179 127;
+    --background: 11 14 32;
+    --foreground: 240 238 255;
+    --card: 18 22 46;
+    --card-foreground: 240 238 255;
+    --muted: 28 33 64;
+    --muted-foreground: 160 168 205;
+    --border: 38 45 84;
+    --primary: 89 150 255; /* #5996FF */
+    --primary-foreground: 11 14 32;
+    --secondary: 244 206 255; /* #F4CEFF */
+    --glow: 56 116 255; /* #3874FF */
+    --glow-2: 244 206 255; /* #F4CEFF */
+    --highlight: 244 206 255; /* accent words; lavender pink in dark mode */
     --blob-opacity: 0.1;
   }
 
@@ -46,7 +52,7 @@
   }
 
   ::selection {
-    background-color: rgb(var(--primary) / 0.25);
+    background-color: rgb(var(--highlight) / 0.3);
   }
 
   :focus-visible {
@@ -132,12 +138,12 @@
 .ambient span:nth-child(1) {
   top: -30vmax;
   left: -20vmax;
-  background: radial-gradient(closest-side, rgb(var(--primary)), transparent);
+  background: radial-gradient(closest-side, rgb(var(--glow)), transparent);
 }
 .ambient span:nth-child(2) {
   bottom: -35vmax;
   right: -25vmax;
-  background: radial-gradient(closest-side, rgb(var(--secondary)), transparent);
+  background: radial-gradient(closest-side, rgb(var(--glow)), transparent);
   animation-duration: 95s;
   animation-delay: -30s;
 }
@@ -146,7 +152,7 @@
   left: 40%;
   width: 45vmax;
   height: 45vmax;
-  background: radial-gradient(closest-side, rgb(var(--primary) / 0.6), transparent);
+  background: radial-gradient(closest-side, rgb(var(--glow-2) / 0.6), transparent);
   animation-duration: 110s;
   animation-delay: -60s;
 }

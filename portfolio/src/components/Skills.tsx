@@ -83,7 +83,7 @@ const Skills = () => (
         transition={{ duration: 0.7, ease }}
         className="font-serif text-5xl leading-none sm:text-6xl md:text-7xl"
       >
-        What I work <span className="italic text-primary">with</span>
+        What I work <span className="italic text-highlight">with</span>
       </motion.h2>
 
       <div className="mt-12 grid gap-10 border-t border-border pt-10 md:grid-cols-3 md:gap-8">

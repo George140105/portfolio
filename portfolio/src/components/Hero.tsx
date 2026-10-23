@@ -66,7 +66,7 @@ const Hero = () => {
                 aria-hidden
                 viewBox="0 0 300 20"
                 preserveAspectRatio="none"
-                className="absolute -bottom-2 left-0 h-3 w-full overflow-visible text-primary sm:-bottom-3 sm:h-4"
+                className="absolute -bottom-2 left-0 h-3 w-full overflow-visible text-highlight sm:-bottom-3 sm:h-4"
               >
                 <path
                   ref={underlineRef}
@@ -84,7 +84,7 @@ const Hero = () => {
             I build{" "}
             <RotatingText
               words={["mobile apps", "websites", "data pipelines"]}
-              className="font-serif italic text-primary"
+              className="font-serif italic text-highlight"
             />
           </motion.p>
 

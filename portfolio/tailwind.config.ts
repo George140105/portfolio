@@ -27,6 +27,7 @@ export default {
         primary: token("primary"),
         "primary-foreground": token("primary-foreground"),
         secondary: token("secondary"),
+        highlight: token("highlight"),
       },
     },
   },

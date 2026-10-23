@@ -23,8 +23,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f3ee" },
-    { media: "(prefers-color-scheme: dark)", color: "#11100e" },
+    { media: "(prefers-color-scheme: light)", color: "#faf8ff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0b0e20" },
   ],
 };
 
@@ -65,7 +65,7 @@ export default function RootLayout({
         <noscript>
           <style>{`.boot-skeleton{display:none}`}</style>
         </noscript>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
           <ModalProvider>{children}</ModalProvider>
         </ThemeProvider>
       </body>

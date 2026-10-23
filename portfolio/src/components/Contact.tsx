@@ -63,7 +63,7 @@ const Contact = () => {
           transition={{ duration: 0.7, ease }}
           className="font-serif text-5xl leading-none sm:text-6xl md:text-8xl"
         >
-          Say <span className="italic text-primary">hello</span>
+          Say <span className="italic text-highlight">hello</span>
         </motion.h2>
         <p className="mt-5 max-w-xl text-muted-foreground sm:text-lg">
           I&apos;m open to internships, research positions and engineering roles. The quickest way

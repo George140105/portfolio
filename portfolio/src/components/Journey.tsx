@@ -365,7 +365,7 @@ const Journey = () => {
           className="mb-16 max-w-2xl md:mb-24"
         >
           <h2 className="font-serif text-5xl leading-none sm:text-6xl md:text-7xl">
-            The road <span className="italic text-primary">so far</span>
+            The road <span className="italic text-highlight">so far</span>
           </h2>
           <p className="mt-5 text-muted-foreground sm:text-lg">
             From explaining A-Level maths as a student myself to shipping apps and running a

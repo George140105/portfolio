@@ -1,10 +1,11 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { FaArrowRight, FaPlay } from "react-icons/fa";
 import ProjectCover from "~/components/ProjectCover";
 import ProjectModal from "~/components/ProjectModal";
 import { SkeletonImage } from "~/components/ui/Media";
+import PhoneFrame from "~/components/ui/PhoneFrame";
 import { categories, projects, type Project, type ProjectCategory } from "~/data/projects";
 
 type Filter = "All" | ProjectCategory;
@@ -17,9 +18,22 @@ const fitClass = (portrait: boolean) =>
     ? "object-contain py-3 drop-shadow-xl group-hover:scale-[1.02]"
     : "object-cover object-top group-hover:scale-[1.04]";
 
+// Mobile apps sit inside a phone outline, so their media fills the screen instead.
+const phoneFit = "object-cover object-top";
+
+const CardPhone = ({ children }: { children: ReactNode }) => (
+  <div className="absolute inset-0 flex items-center justify-center">
+    <PhoneFrame className="h-[88%] transition-transform duration-700 group-hover:-translate-y-1 group-hover:scale-[1.03]">
+      {children}
+    </PhoneFrame>
+  </div>
+);
+
 const CardMedia = ({ project }: { project: Project }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [portrait, setPortrait] = useState(false);
+  const phone = project.category === "Mobile";
+  const fit = phone ? phoneFit : fitClass(portrait);
   // Cards show a tiny poster; the video is only fetched once someone hovers the card.
   const [wantVideo, setWantVideo] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -29,16 +43,8 @@ const CardMedia = ({ project }: { project: Project }) => {
   }, [wantVideo]);
 
   if (project.video) {
-    return (
-      <div
-        className="relative h-full w-full bg-muted"
-        onPointerEnter={(e) => {
-          if (e.pointerType !== "mouse") return;
-          if (wantVideo) videoRef.current?.play().catch(() => {});
-          else setWantVideo(true);
-        }}
-        onPointerLeave={() => videoRef.current?.pause()}
-      >
+    const media = (
+      <>
         {project.poster && (
           <SkeletonImage
             src={project.poster}
@@ -46,7 +52,7 @@ const CardMedia = ({ project }: { project: Project }) => {
             fill
             unoptimized
             onLoad={(e) => setPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
-            className={`transition-transform duration-700 ${fitClass(portrait)}`}
+            className={`transition-transform duration-700 ${fit}`}
           />
         )}
         {wantVideo && (
@@ -58,11 +64,24 @@ const CardMedia = ({ project }: { project: Project }) => {
             playsInline
             preload="auto"
             onPlaying={() => setPlaying(true)}
-            className={`absolute inset-0 h-full w-full transition-[opacity,transform] duration-500 ${fitClass(portrait)} ${
+            className={`absolute inset-0 h-full w-full transition-[opacity,transform] duration-500 ${fit} ${
               playing ? "opacity-100" : "opacity-0"
             }`}
           />
         )}
+      </>
+    );
+    return (
+      <div
+        className="relative h-full w-full bg-muted"
+        onPointerEnter={(e) => {
+          if (e.pointerType !== "mouse") return;
+          if (wantVideo) videoRef.current?.play().catch(() => {});
+          else setWantVideo(true);
+        }}
+        onPointerLeave={() => videoRef.current?.pause()}
+      >
+        {phone ? <CardPhone>{media}</CardPhone> : media}
         <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur transition-opacity group-hover:opacity-0">
           <FaPlay size={9} className="ml-0.5" />
         </span>
@@ -71,16 +90,19 @@ const CardMedia = ({ project }: { project: Project }) => {
   }
 
   if (project.images?.length) {
+    const media = (
+      <SkeletonImage
+        src={project.images[0]}
+        alt=""
+        fill
+        sizes={phone ? "200px" : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"}
+        onLoad={(e) => setPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
+        className={`transition-transform duration-700 ${fit}`}
+      />
+    );
     return (
       <div className="relative h-full w-full bg-muted">
-        <SkeletonImage
-          src={project.images[0]}
-          alt=""
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          onLoad={(e) => setPortrait(e.currentTarget.naturalHeight > e.currentTarget.naturalWidth)}
-          className={`transition-transform duration-700 ${fitClass(portrait)}`}
-        />
+        {phone ? <CardPhone>{media}</CardPhone> : media}
       </div>
     );
   }

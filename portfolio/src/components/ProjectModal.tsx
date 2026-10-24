@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight, FaTimes } from "react-icons/fa";
 import ProjectCover from "~/components/ProjectCover";
 import { SkeletonImage, SkeletonVideo } from "~/components/ui/Media";
+import PhoneFrame from "~/components/ui/PhoneFrame";
 import type { Project } from "~/data/projects";
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
   onClose: () => void;
 }
 
-const Gallery = ({ images }: { images: string[] }) => {
+const Gallery = ({ images, phone }: { images: string[]; phone?: boolean }) => {
   const [i, setI] = useState(0);
 
   useEffect(() => {
@@ -36,12 +37,12 @@ const Gallery = ({ images }: { images: string[] }) => {
             src={images[i]}
             alt=""
             fill
-            sizes="(max-width: 896px) 100vw, 896px"
-            className="object-contain"
+            sizes={phone ? "320px" : "(max-width: 896px) 100vw, 896px"}
+            className={phone ? "object-cover object-top" : "object-contain"}
           />
         </motion.div>
       </AnimatePresence>
-      <div className="absolute inset-x-0 bottom-3 flex justify-center gap-1.5">
+      <div className={`absolute inset-x-0 flex justify-center gap-1.5 ${phone ? "bottom-[4%]" : "bottom-3"}`}>
         {images.map((src, n) => (
           <button
             key={src}
@@ -78,6 +79,7 @@ const ProjectModal = ({ projects, index, onChange, onClose }: Props) => {
   }, [index, total]);
 
   const hasMedia = !!(project?.video || project?.images?.length);
+  const phone = hasMedia && project?.category === "Mobile";
 
   return (
     <AnimatePresence>
@@ -116,13 +118,37 @@ const ProjectModal = ({ projects, index, onChange, onClose }: Props) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -16 }}
                   transition={{ duration: 0.2 }}
+                  // On large screens the phone sits on the left and stays put while the details scroll.
+                  className={phone ? "lg:flex lg:items-start" : undefined}
                 >
                   <div
                     className={`relative flex items-center justify-center border-b border-border ${
-                      hasMedia ? "h-[38dvh] bg-black sm:h-[52vh]" : "h-44 sm:h-52"
+                      !hasMedia
+                        ? "h-44 sm:h-52"
+                        : phone
+                          ? "h-[52dvh] bg-muted py-5 sm:h-[62vh] sm:py-6 lg:sticky lg:top-0 lg:h-[min(78dvh,720px)] lg:w-[42%] lg:shrink-0 lg:border-b-0 lg:border-r lg:py-8"
+                          : "h-[38dvh] bg-black sm:h-[52vh]"
                     }`}
                   >
-                    {project.video && project.poster ? (
+                    {phone && project.video ? (
+                      // Controls don't fit a phone-sized screen; the demo just loops.
+                      <PhoneFrame className="h-full">
+                        <SkeletonVideo
+                          key={project.video}
+                          src={project.video}
+                          poster={project.poster}
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="h-full w-full object-cover object-top"
+                        />
+                      </PhoneFrame>
+                    ) : phone && project.images?.length ? (
+                      <PhoneFrame className="h-full">
+                        <Gallery images={project.images} phone />
+                      </PhoneFrame>
+                    ) : project.video && project.poster ? (
                       // The poster shows instantly while the video buffers.
                       <video
                         key={project.video}
@@ -154,7 +180,7 @@ const ProjectModal = ({ projects, index, onChange, onClose }: Props) => {
                     )}
                   </div>
 
-                  <div className="p-6 sm:p-8">
+                  <div className={`p-6 sm:p-8 ${phone ? "lg:flex-1 lg:self-center lg:p-10" : ""}`}>
                     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
                       <span className="text-primary">{project.category}</span>
                       {project.year && <span>{project.year}</span>}

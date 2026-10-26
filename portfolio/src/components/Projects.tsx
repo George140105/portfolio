@@ -1,12 +1,12 @@
 "use client";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { FaArrowRight, FaPlay, FaTimes } from "react-icons/fa";
+import { FaArrowRight, FaPlay } from "react-icons/fa";
 import ProjectCover from "~/components/ProjectCover";
 import ProjectModal from "~/components/ProjectModal";
 import { SkeletonImage } from "~/components/ui/Media";
 import PhoneFrame from "~/components/ui/PhoneFrame";
-import { categories, projects, TECH_FILTER_EVENT, type Project, type ProjectCategory } from "~/data/projects";
+import { categories, projects, type Project, type ProjectCategory } from "~/data/projects";
 
 type Filter = "All" | ProjectCategory;
 
@@ -87,7 +87,7 @@ const CardMedia = ({ project }: { project: Project }) => {
         onPointerLeave={() => videoRef.current?.pause()}
       >
         {phone ? <CardPhone>{media}</CardPhone> : media}
-        <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur transition-opacity group-hover:opacity-0 [@media(hover:none)]:hidden">
+        <span className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center material rounded-full text-foreground transition-opacity group-hover:opacity-0 [@media(hover:none)]:hidden">
           <FaPlay size={9} className="ml-0.5" />
         </span>
       </div>
@@ -131,7 +131,7 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen: () => void
       <div className="relative aspect-[4/3] w-full overflow-hidden border-b border-border">
         <CardMedia project={project} />
         {project.status && (
-          <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-background/85 px-2.5 py-1 font-mono text-xs backdrop-blur">
+          <span className="absolute left-3 top-3 flex items-center gap-1.5 material rounded-full px-2.5 py-1 font-mono text-xs">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-secondary" />
             in progress
           </span>
@@ -160,29 +160,17 @@ const ProjectCard = ({ project, onOpen }: { project: Project; onOpen: () => void
 
 const Projects = () => {
   const [filter, setFilter] = useState<Filter>("All");
-  // Set from the Skills section: show only projects built with one technology.
-  const [tech, setTech] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const onTech = (e: Event) => {
-      setTech((e as CustomEvent<string>).detail);
-      setFilter("All");
-    };
-    window.addEventListener(TECH_FILTER_EVENT, onTech);
-    return () => window.removeEventListener(TECH_FILTER_EVENT, onTech);
-  }, []);
-
   const matching = useMemo(() => {
-    let list = filter === "All" ? projects : projects.filter((p) => p.category === filter);
-    if (tech) list = list.filter((p) => p.techStack.includes(tech));
+    const list = filter === "All" ? projects : projects.filter((p) => p.category === filter);
     // Featured work first, then anything with a demo; otherwise keep the authored (newest-first) order.
     const rank = (p: Project) => (p.featured ? 0 : hasMedia(p) ? 1 : 2);
     return [...list].sort((a, b) => rank(a) - rank(b));
-  }, [filter, tech]);
+  }, [filter]);
 
-  const collapsed = filter === "All" && !tech && !showAll && matching.length > INITIAL_COUNT;
+  const collapsed = filter === "All" && !showAll && matching.length > INITIAL_COUNT;
   const visible = collapsed ? matching.slice(0, INITIAL_COUNT) : matching;
 
   const filters: Filter[] = ["All", ...categories];
@@ -241,32 +229,6 @@ const Projects = () => {
             })}
           </div>
         </div>
-
-        <AnimatePresence>
-          {tech && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease }}
-              className="overflow-hidden"
-            >
-              <p className="flex flex-wrap items-center gap-2 pt-4 text-sm text-muted-foreground">
-                Built with
-                <button
-                  onClick={() => setTech(null)}
-                  aria-label={`Clear ${tech} filter`}
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-3 py-1 font-medium text-primary-foreground transition-transform active:scale-95"
-                >
-                  {tech} <FaTimes size={10} />
-                </button>
-                <span>
-                  · {matching.length} project{matching.length === 1 ? "" : "s"}
-                </span>
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         <motion.ul layout className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout">

@@ -1,6 +1,6 @@
 "use client";
-import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
-import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll, useSpring } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import ThemeToggle from "~/components/ThemeToggle";
 
@@ -16,13 +16,24 @@ const Header = () => {
   const [active, setActive] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { scrollYProgress } = useScroll();
+  const [hidden, setHidden] = useState(false);
+  const travel = useRef(0);
+  const { scrollY, scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
 
+  // Hide the bar after a deliberate scroll down; bring it back on the first small scroll up.
+  // Distance is summed per direction so trackpad jitter doesn't make it flicker.
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const delta = y - (scrollY.getPrevious() ?? y);
+    setScrolled(y > 24);
+    if (Math.sign(delta) !== Math.sign(travel.current)) travel.current = 0;
+    travel.current += delta;
+    if (y < 120 || travel.current < -8) setHidden(false);
+    else if (travel.current > 32) setHidden(true);
+  });
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
+    setScrolled(window.scrollY > 24);
 
     // A section is "active" when it crosses the upper-middle band of the viewport.
     const observer = new IntersectionObserver(
@@ -38,10 +49,7 @@ const Header = () => {
       if (el) observer.observe(el);
     });
 
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
   // While the menu is open: lock the page behind it and let Escape close it.
@@ -58,7 +66,8 @@ const Header = () => {
   }, [menuOpen]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    // Keyboard users tabbing into the header always get it back.
+    <header className="fixed inset-x-0 top-0 z-50" onFocusCapture={() => setHidden(false)}>
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -72,18 +81,18 @@ const Header = () => {
           />
         )}
       </AnimatePresence>
+      {/* Moves past the fade below it too (64px bar + 24px fade), so nothing lingers at the top. */}
       <motion.div
-        style={{ scaleX: progress }}
-        className="absolute inset-x-0 top-0 h-[2px] origin-left bg-primary"
-      />
-      <div
-        className={`border-b transition-colors duration-300 ${
-          scrolled || menuOpen
-            ? `border-border backdrop-blur-md ${menuOpen ? "bg-background" : "bg-background/80"}`
-            : "border-transparent"
-        }`}
+        className="relative"
+        animate={{ y: hidden && !menuOpen ? -96 : 0 }}
+        transition={{ type: "spring", bounce: 0, duration: 0.35 }}
       >
-        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
+        <div
+          aria-hidden
+          data-solid={menuOpen || undefined}
+          className={`header-material ${scrolled || menuOpen ? "opacity-100" : "opacity-0"}`}
+        />
+        <nav className="relative mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <a href="#home" onClick={() => setMenuOpen(false)} className="font-serif text-2xl leading-none">
             George Amgad<span className="text-primary">.</span>
           </a>
@@ -130,7 +139,7 @@ const Header = () => {
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden md:hidden"
+              className="relative overflow-hidden md:hidden"
             >
               <div className="flex flex-col px-4 pb-4">
                 {sections.map(({ id, label }, i) => (
@@ -153,7 +162,12 @@ const Header = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
+      {/* Progress sits outside the moving bar, so it stays visible while the header is tucked away. */}
+      <motion.div
+        style={{ scaleX: progress }}
+        className="absolute inset-x-0 top-0 h-[2px] origin-left bg-primary"
+      />
     </header>
   );
 };

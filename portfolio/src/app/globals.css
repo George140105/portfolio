@@ -53,6 +53,21 @@
     overflow-x: clip;
   }
 
+  /* Even line lengths in headings, no one-word last lines in paragraphs. */
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  h2 {
+    letter-spacing: -0.01em; /* large display type reads looser, so pull it in slightly */
+  }
+  p,
+  li,
+  dd {
+    text-wrap: pretty;
+  }
+
   ::selection {
     background-color: rgb(var(--highlight) / 0.3);
   }
@@ -69,10 +84,72 @@
   }
 }
 
-/* Theme switches cross-fade the whole page in one piece (see ThemeToggle). */
+/* Theme switches: the new theme spreads in a circle from the toggle (the clip-path runs in ThemeToggle),
+   so the default cross-fade is turned off. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.35s;
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Header material: a tinted blur that fades out below the bar instead of ending in a hard line. */
+.header-material {
+  position: absolute;
+  inset: 0 0 -1.5rem 0;
+  pointer-events: none;
+  background-color: rgb(var(--background) / 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 1.5rem), transparent);
+  mask-image: linear-gradient(to bottom, black calc(100% - 1.5rem), transparent);
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+.header-material[data-solid] {
+  background-color: rgb(var(--background));
+}
+
+/* Translucent chips and buttons that float over media. */
+.material {
+  background-color: rgb(var(--background) / 0.82);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Reduce transparency: frosted surfaces become solid. */
+@media (prefers-reduced-transparency: reduce) {
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .header-material,
+  .material {
+    background-color: rgb(var(--background));
+  }
+}
+
+/* Increase contrast: stronger borders and secondary text, solid chrome with a real edge. */
+@media (prefers-contrast: more) {
+  :root {
+    --border: 140 135 180;
+    --muted-foreground: 52 58 96;
+  }
+  .dark {
+    --border: 105 115 165;
+    --muted-foreground: 205 210 235;
+  }
+  .header-material {
+    background-color: rgb(var(--background));
+    -webkit-mask-image: none;
+    mask-image: none;
+    inset: 0;
+    border-bottom: 1px solid rgb(var(--foreground) / 0.6);
+  }
+  .material {
+    background-color: rgb(var(--background));
+    box-shadow: 0 0 0 1px rgb(var(--foreground) / 0.6);
+  }
 }
 
 @layer components {

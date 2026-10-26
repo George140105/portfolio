@@ -250,7 +250,7 @@ const ProjectModal = ({ projects, index, onChange, onClose }: Props) => {
               ref={closeRef}
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-background/85 backdrop-blur transition-transform hover:bg-background active:scale-90"
+              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center material rounded-full transition-transform hover:bg-background active:scale-90"
             >
               <FaTimes size={13} />
             </button>

@@ -1,5 +1,5 @@
 "use client";
-import { motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
+import { AnimatePresence, motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { IconType } from "react-icons";
 import {
@@ -285,6 +285,9 @@ const Journey = () => {
   const [trail, setTrail] = useState<Trail | null>(null);
   const [markers, setMarkers] = useState<{ x: number; y: number; angle: number }[]>([]);
   const [reached, setReached] = useState(0);
+  const [inTrail, setInTrail] = useState(false);
+  // Which way the year label rolls: forward in time rolls up, scrolling back rolls down.
+  const yearDir = useRef(1);
   const drawn = useMotionValue(0);
 
   const { scrollYProgress } = useScroll({ target: listRef, offset: ["start 65%", "end 65%"] });
@@ -331,7 +334,11 @@ const Journey = () => {
       tipRef.current?.setAttribute("transform", `translate(${p.x} ${p.y}) rotate(${angle})`);
 
       const count = nodeLengths.current.filter((l) => l <= len + 2).length;
-      setReached((r) => (r === count ? r : count));
+      setReached((r) => {
+        if (r !== count) yearDir.current = count > r ? 1 : -1;
+        return count;
+      });
+      setInTrail(progress > 0 && progress < 1);
     },
     [trail, drawn]
   );
@@ -373,71 +380,108 @@ const Journey = () => {
           </p>
         </motion.header>
 
-        <ol ref={listRef} className="relative">
-          {trail && (
-            <svg
-              aria-hidden
-              width={trail.width}
-              height={trail.height}
-              className="pointer-events-none absolute left-0 top-0 overflow-visible"
-            >
-              {/* The full route, faint and dotted like a footpath on a map */}
-              <path
-                ref={pathRef}
-                d={trail.d}
-                fill="none"
-                stroke="rgb(var(--muted-foreground) / 0.35)"
-                strokeWidth="2"
-                strokeDasharray="1 9"
-                strokeLinecap="round"
-              />
-              {/* Direction arrows halfway along each leg */}
-              {markers.map((mk, i) => (
+        <div className="relative">
+          <ol ref={listRef} className="relative">
+            {trail && (
+              <svg
+                aria-hidden
+                width={trail.width}
+                height={trail.height}
+                className="pointer-events-none absolute left-0 top-0 overflow-visible"
+              >
+                {/* The full route, faint and dotted like a footpath on a map */}
                 <path
-                  key={i}
-                  d="M -5 -5 L 2 0 L -5 5"
+                  ref={pathRef}
+                  d={trail.d}
                   fill="none"
-                  stroke="rgb(var(--muted-foreground) / 0.6)"
-                  strokeWidth="1.8"
+                  stroke="rgb(var(--muted-foreground) / 0.35)"
+                  strokeWidth="2"
+                  strokeDasharray="1 9"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
-                  transform={`translate(${mk.x} ${mk.y}) rotate(${mk.angle})`}
                 />
-              ))}
-              {/* The part you've travelled, inked in as you scroll */}
-              <motion.path
-                d={trail.d}
-                fill="none"
-                stroke="rgb(var(--primary))"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                style={{ pathLength: drawn }}
-              />
-              <g ref={tipRef}>
-                <path
-                  d="M -9 -7 L 3 0 L -9 7"
+                {/* Direction arrows halfway along each leg */}
+                {markers.map((mk, i) => (
+                  <path
+                    key={i}
+                    d="M -5 -5 L 2 0 L -5 5"
+                    fill="none"
+                    stroke="rgb(var(--muted-foreground) / 0.6)"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    transform={`translate(${mk.x} ${mk.y}) rotate(${mk.angle})`}
+                  />
+                ))}
+                {/* The part you've travelled, inked in as you scroll */}
+                <motion.path
+                  d={trail.d}
                   fill="none"
                   stroke="rgb(var(--primary))"
                   strokeWidth="2.5"
                   strokeLinecap="round"
-                  strokeLinejoin="round"
+                  style={{ pathLength: drawn }}
                 />
-              </g>
-            </svg>
-          )}
+                <g ref={tipRef}>
+                  <path
+                    d="M -9 -7 L 3 0 L -9 7"
+                    fill="none"
+                    stroke="rgb(var(--primary))"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </g>
+              </svg>
+            )}
 
-          {milestones.map((m, i) => (
-            <MilestoneRow
-              key={m.title}
-              m={m}
-              index={i}
-              reached={i < reached}
-              nodeRef={(el) => {
-                nodeEls.current[i] = el;
-              }}
-            />
-          ))}
-        </ol>
+            {milestones.map((m, i) => (
+              <MilestoneRow
+                key={m.title}
+                m={m}
+                index={i}
+                reached={i < reached}
+                nodeRef={(el) => {
+                  nodeEls.current[i] = el;
+                }}
+              />
+            ))}
+          </ol>
+
+          {/* Where you are on the trail: the latest milestone reached, pinned to the bottom of the screen. */}
+          <div aria-hidden className="pointer-events-none sticky bottom-6 z-20 flex h-0 items-end justify-center">
+            <AnimatePresence>
+              {inTrail && reached > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                  transition={{ type: "spring", bounce: 0, duration: 0.35 }}
+                  className="material overflow-hidden rounded-full border border-border px-4 py-2 shadow-lg shadow-black/10"
+                >
+                  <AnimatePresence mode="popLayout" initial={false} custom={yearDir.current}>
+                    <motion.p
+                      key={reached}
+                      custom={yearDir.current}
+                      variants={{
+                        enter: (d: number) => ({ y: d * 18, opacity: 0 }),
+                        center: { y: 0, opacity: 1 },
+                        exit: (d: number) => ({ y: d * -18, opacity: 0 }),
+                      }}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ type: "spring", bounce: 0, duration: 0.3 }}
+                      className="flex items-baseline gap-2 whitespace-nowrap"
+                    >
+                      <span className="font-serif text-xl leading-none">{milestones[reached - 1].year}</span>
+                      <span className="font-mono text-xs text-muted-foreground">{milestones[reached - 1].org}</span>
+                    </motion.p>
+                  </AnimatePresence>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
 
         <Languages />
       </div>

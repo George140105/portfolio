@@ -22,7 +22,6 @@ import {
   SiTypescript,
   SiVercel,
 } from "react-icons/si";
-import { projects, TECH_FILTER_EVENT } from "~/data/projects";
 
 interface Group {
   title: string;
@@ -74,14 +73,6 @@ const groups: Group[] = [
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-const usedIn = (name: string) => projects.filter((p) => p.techStack.includes(name)).length;
-
-const showProjectsBuiltWith = (name: string) => {
-  window.dispatchEvent(new CustomEvent(TECH_FILTER_EVENT, { detail: name }));
-  document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-};
-
-const chipClass = "flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1.5 text-sm";
 
 const Skills = () => (
   <section id="skills" className="px-4 py-24 sm:px-6 sm:py-32">
@@ -95,9 +86,6 @@ const Skills = () => (
       >
         What I work <span className="italic text-highlight">with</span>
       </motion.h2>
-      <p className="mt-5 max-w-xl text-muted-foreground sm:text-lg">
-        Tap a skill with a number to see the projects I built with it.
-      </p>
 
       <div className="mt-12 grid gap-10 border-t border-border pt-10 md:grid-cols-3 md:gap-8">
         {groups.map((g, gi) => (
@@ -112,38 +100,19 @@ const Skills = () => (
               0{gi + 1} — {g.title}
             </h3>
             <ul className="mt-5 flex flex-wrap gap-2">
-              {g.skills.map((s, si) => {
-                const used = usedIn(s.name);
-                const content = (
-                  <>
-                    {s.icon && <s.icon size={13} className="text-muted-foreground" />}
-                    {s.name}
-                    {used > 0 && <span className="font-mono text-xs text-muted-foreground">{used}</span>}
-                  </>
-                );
-                return (
-                  <motion.li
-                    key={s.name}
-                    initial={{ opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: gi * 0.1 + si * 0.035, duration: 0.4 }}
-                  >
-                    {/* Only skills with projects behind them are buttons; the rest are plain labels. */}
-                    {used > 0 ? (
-                      <button
-                        onClick={() => showProjectsBuiltWith(s.name)}
-                        title={`See ${used} project${used === 1 ? "" : "s"} built with ${s.name}`}
-                        className={`${chipClass} transition-[border-color,transform] hover:border-foreground/40 active:scale-95`}
-                      >
-                        {content}
-                      </button>
-                    ) : (
-                      <span className={chipClass}>{content}</span>
-                    )}
-                  </motion.li>
-                );
-              })}
+              {g.skills.map((s, si) => (
+                <motion.li
+                  key={s.name}
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: gi * 0.1 + si * 0.035, duration: 0.4 }}
+                  className="flex items-center gap-1.5 rounded-full border border-border bg-card/70 px-3 py-1.5 text-sm"
+                >
+                  {s.icon && <s.icon size={13} className="text-muted-foreground" />}
+                  {s.name}
+                </motion.li>
+              ))}
             </ul>
           </motion.div>
         ))}

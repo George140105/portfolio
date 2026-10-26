@@ -42,17 +42,17 @@ const ARROWS = {
 const ARROW_HEAD = "M106 68 L105 49 L91 57.5 Z";
 
 const notes: { corner: Corner; text: string; arrow: keyof typeof ARROWS; className: string }[] = [
-  { corner: "tl", text: "Go on, click it!", arrow: "loop", className: "left-0 top-0" },
-  { corner: "tr", text: "I reply within 2 days", arrow: "swoosh", className: "right-0 top-4 hidden sm:flex" },
+  { corner: "tl", text: "Don't be shy, say hi!", arrow: "loop", className: "left-0 top-12" },
+  { corner: "tr", text: "I'd love to hear from you", arrow: "swoosh", className: "right-0 top-12 hidden sm:flex" },
   {
     corner: "bl",
-    text: "Internships? Research? Let's talk",
+    text: "Got an idea? Let's chat",
     arrow: "wave",
     className: "bottom-4 left-0 hidden sm:flex",
   },
   {
     corner: "br",
-    text: "The email is already written for you",
+    text: "I've already started the email for you",
     arrow: "bounce",
     className: "bottom-0 right-0",
   },

@@ -18,8 +18,8 @@ export default function Home() {
       <Header />
       <main>
         <Hero />
-        <Journey />
         <Projects />
+        <Journey />
         <Skills />
         <Contact />
       </main>

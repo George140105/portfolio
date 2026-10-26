@@ -4,16 +4,16 @@ import { useEffect, useState } from "react";
 import { HiMenuAlt3, HiX } from "react-icons/hi";
 import ThemeToggle from "~/components/ThemeToggle";
 
+// The name in the header already leads home, so the nav only lists destinations.
 const sections = [
-  { id: "home", label: "Home" },
-  { id: "journey", label: "Journey" },
   { id: "projects", label: "Projects" },
+  { id: "journey", label: "Journey" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
 
 const Header = () => {
-  const [active, setActive] = useState("home");
+  const [active, setActive] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { scrollYProgress } = useScroll();
@@ -28,12 +28,12 @@ const Header = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (entry.isIntersecting) setActive(entry.target.id === "home" ? null : entry.target.id);
         });
       },
       { rootMargin: "-40% 0px -55% 0px" }
     );
-    sections.forEach(({ id }) => {
+    [{ id: "home" }, ...sections].forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
@@ -44,8 +44,34 @@ const Header = () => {
     };
   }, []);
 
+  // While the menu is open: lock the page behind it and let Escape close it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [menuOpen]);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            aria-hidden
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={() => setMenuOpen(false)}
+            className="fixed inset-0 -z-10 bg-black/30 backdrop-blur-[2px] md:hidden"
+          />
+        )}
+      </AnimatePresence>
       <motion.div
         style={{ scaleX: progress }}
         className="absolute inset-x-0 top-0 h-[2px] origin-left bg-primary"
@@ -53,12 +79,12 @@ const Header = () => {
       <div
         className={`border-b transition-colors duration-300 ${
           scrolled || menuOpen
-            ? "border-border bg-background/80 backdrop-blur-md"
+            ? `border-border backdrop-blur-md ${menuOpen ? "bg-background" : "bg-background/80"}`
             : "border-transparent"
         }`}
       >
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-          <a href="#home" className="font-serif text-2xl leading-none">
+          <a href="#home" onClick={() => setMenuOpen(false)} className="font-serif text-2xl leading-none">
             George Amgad<span className="text-primary">.</span>
           </a>
 
@@ -87,7 +113,7 @@ const Header = () => {
           <div className="flex items-center gap-1">
             <ThemeToggle />
             <button
-              className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-muted md:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full transition-transform hover:bg-muted active:scale-90 md:hidden"
               onClick={() => setMenuOpen((o) => !o)}
               aria-label={menuOpen ? "Close menu" : "Open menu"}
               aria-expanded={menuOpen}
@@ -115,7 +141,7 @@ const Header = () => {
                     initial={{ opacity: 0, x: -12 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.04 * i }}
-                    className={`flex items-baseline justify-between border-b border-border py-3 font-serif text-3xl ${
+                    className={`flex items-baseline justify-between border-b border-border py-3 font-serif text-3xl transition-opacity active:opacity-60 ${
                       active === id ? "text-primary" : ""
                     }`}
                   >

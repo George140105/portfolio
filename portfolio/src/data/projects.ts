@@ -19,6 +19,9 @@ export interface Project {
   featured?: boolean;
 }
 
+/** Window event the Skills section fires to filter projects by one technology. */
+export const TECH_FILTER_EVENT = "filter-projects-by-tech";
+
 export const categories: ProjectCategory[] = [
   "Mobile",
   "AI & Data",

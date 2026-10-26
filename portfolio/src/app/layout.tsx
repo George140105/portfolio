@@ -2,7 +2,6 @@ import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
-import { ModalProvider } from "~/providers/ModalProvider";
 
 const sans = Geist({ subsets: ["latin"], variable: "--font-sans" });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
@@ -39,7 +38,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${sans.variable} ${mono.variable} ${serif.variable}`}
     >
-      <body className="bg-background font-sans text-foreground transition-colors duration-300">
+      <body className="bg-background font-sans text-foreground">
         <div className="ambient" aria-hidden>
           <span />
           <span />
@@ -63,10 +62,10 @@ export default function RootLayout({
           </div>
         </div>
         <noscript>
-          <style>{`.boot-skeleton{display:none}`}</style>
+          <style>{`.boot-skeleton{display:none}.hero-name{visibility:visible!important}`}</style>
         </noscript>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <ModalProvider>{children}</ModalProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
         </ThemeProvider>
       </body>
     </html>

@@ -41,6 +41,8 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+    /* Keeps the page from shifting when a dialog locks scrolling. */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -65,6 +67,12 @@
       scroll-behavior: auto;
     }
   }
+}
+
+/* Theme switches cross-fade the whole page in one piece (see ThemeToggle). */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.35s;
 }
 
 @layer components {

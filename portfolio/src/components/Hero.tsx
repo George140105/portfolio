@@ -57,7 +57,7 @@ const Hero = () => {
           <h1
             ref={nameRef}
             style={{ visibility: "hidden" }}
-            className="mt-4 font-serif text-[clamp(3.5rem,13vw,8.5rem)] leading-[0.9] tracking-tight"
+            className="hero-name mt-4 font-serif text-[clamp(3.5rem,13vw,8.5rem)] leading-[0.9] tracking-tight"
           >
             George <br className="hidden sm:block" />
             <span className="relative inline-block">
@@ -101,19 +101,20 @@ const Hero = () => {
           <motion.div {...fade(0.7)} className="mt-8 flex flex-wrap items-center gap-3">
             <Magnet>
               <a
-                href="#journey"
-                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-primary hover:text-primary-foreground"
+                href="#projects"
+                className="group inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-[background-color,color,transform] hover:bg-primary hover:text-primary-foreground active:scale-[0.97] active:duration-100"
               >
-                Follow my journey
+                See my work
                 <FaArrowDown className="transition-transform group-hover:translate-y-0.5" size={12} />
               </a>
             </Magnet>
             <a
               href="/George_Amgad_Resume.pdf"
-              download
-              className="inline-flex items-center rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium transition-colors hover:border-foreground"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center rounded-full border border-foreground/20 px-6 py-3 text-sm font-medium transition-[border-color,transform] hover:border-foreground active:scale-[0.97] active:duration-100"
             >
-              Download resume
+              View resume
             </a>
             <div className="ml-1 flex gap-1">
               {[
@@ -130,7 +131,7 @@ const Hero = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-[background-color,color,transform] hover:bg-muted hover:text-foreground active:scale-90 active:duration-100"
                 >
                   <Icon size={19} />
                 </a>
@@ -143,7 +144,8 @@ const Hero = () => {
             className="mt-12 grid max-w-xl grid-cols-2 gap-y-6 border-t border-border pt-6 sm:grid-cols-4"
           >
             {[
-              { value: <CountUp to={1.05} decimals={2} />, label: "GPA, German scale" },
+              // German grades run from 1.0 (best) down to 4.0, so this one is shown as-is, not counted up.
+              { value: "1.05", label: "GPA (1.0 is the best)" },
               { value: "Top 1%", label: "IGCSE, nationally" },
               { value: <CountUp to={2} />, label: "Industry roles" },
               { value: <CountUp to={projects.length} />, label: "Projects" },

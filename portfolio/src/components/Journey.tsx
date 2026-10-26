@@ -246,7 +246,7 @@ const MilestoneRow = ({
         >
           <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
             <span className="font-mono text-xs text-primary">{m.period}</span>
-            <span className="font-mono text-[11px] text-muted-foreground">{m.kind}</span>
+            <span className="font-mono text-xs text-muted-foreground">{m.kind}</span>
           </div>
           <h3 className="mt-3 font-serif text-2xl leading-tight sm:text-[1.7rem]">{m.title}</h3>
           <p className="mt-1 text-sm text-foreground/80">

@@ -18,8 +18,9 @@ export default function RotatingText({ words, interval = 2800, className }: Prop
   }, [words.length, interval]);
 
   return (
-    <span className={`relative inline-flex overflow-hidden ${className ?? ""}`} aria-live="polite">
-      <span className="sr-only">{words[i]}</span>
+    <span className={`relative inline-flex overflow-hidden ${className ?? ""}`}>
+      {/* Screen readers get the whole list once instead of a new word every few seconds. */}
+      <span className="sr-only">{new Intl.ListFormat("en", { type: "conjunction" }).format(words)}</span>
       <AnimatePresence mode="wait" initial={false}>
         <motion.span key={words[i]} className="inline-flex whitespace-pre" aria-hidden>
           {words[i].split("").map((ch, n) => (

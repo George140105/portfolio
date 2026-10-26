@@ -3,6 +3,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { flushSync } from "react-dom";
 import { HiMoon, HiSun } from "react-icons/hi";
 
 export default function ThemeToggle() {
@@ -18,10 +19,18 @@ export default function ThemeToggle() {
 
   const isDark = resolvedTheme !== "light";
 
+  // Cross-fade the whole page at once so cards and background don't change colour at different times.
+  const toggle = () => {
+    const next = isDark ? "light" : "dark";
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!document.startViewTransition || reduce) return setTheme(next);
+    document.startViewTransition(() => flushSync(() => setTheme(next)));
+  };
+
   return (
     <button
-      onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full hover:bg-muted"
+      onClick={toggle}
+      className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full transition-transform hover:bg-muted active:scale-90"
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
       <AnimatePresence mode="wait" initial={false}>
